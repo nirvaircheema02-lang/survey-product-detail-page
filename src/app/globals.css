@@ -1,0 +1,612 @@
+@import '@kenresearch/design-system/styles/base.css';
+@import '@kenresearch/design-system/styles/utilities.css';
+@import '@kenresearch/design-system/styles/editorial-light.css';
+@import '@kenresearch/design-system/styles/cinematic-dark.css';
+/* Auto-generated safelist · regen w/ `node scripts/gen-ds-safelist.mjs` from workspace root */
+@import '@kenresearch/design-system/styles/_safelist.generated.css';
+
+/* ── v2-only Tailwind v4 @theme registration ─────────────────────────────
+   Reason: v2 builder pattern uses `className="font-display"` + `className="font-body"`
+   Tailwind utilities (272 occurrences across sections). Canonical consumers
+   (V0_lite_report · V0.2_report · report-store) DON'T use these utility classes —
+   they rely on DS atom internal font-family + body cascade. v2 needs explicit
+   @theme registration for those utility classes to compile.
+
+   Future fix: refactor v2 to canonical pattern (drop className font-* · use DS
+   atoms + body cascade) · then this block can be deleted. Logged as tech-debt.
+   ──────────────────────────────────────────────────────────────────────── */
+@theme {
+  --font-display: 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+
+  /* shadcn token registration · Tailwind v4 requires @theme for `bg-background` etc.
+     to generate as utility classes. :root alone does NOT register them as Tailwind
+     theme vars · only as raw CSS vars. Added 2026-05-21 · QA caught modal transparency. */
+  --color-background:           #ffffff;
+  --color-foreground:           rgba(0, 0, 0, 0.9);
+  --color-card:                 #ffffff;
+  --color-card-foreground:      rgba(0, 0, 0, 0.9);
+  --color-popover:              #ffffff;
+  --color-popover-foreground:   rgba(0, 0, 0, 0.9);
+  --color-muted:                #fafafa;
+  --color-muted-foreground:     rgba(0, 0, 0, 0.6);
+  --color-accent:               #f5f5f5;
+  --color-accent-foreground:    rgba(0, 0, 0, 0.9);
+  --color-border:               #e5e5e5;
+  --color-input:                #e5e5e5;
+  --color-ring:                 #b01f24;
+  --color-primary:              #b01f24;
+  --color-primary-foreground:   #ffffff;
+  --color-secondary:            #f5f5f5;
+  --color-secondary-foreground: rgba(0, 0, 0, 0.9);
+  --color-destructive:          #b01f24;
+  --color-destructive-foreground: #ffffff;
+}
+
+/* ── @source DIRECT SCAN of DS source (ROOT FIX · 2026-05-14 R4) ─────────
+   PERMANENT FIX for Tailwind v4 + node_modules scan gap.
+   Instead of chasing individual safelist entries every time a DS atom adds
+   a new utility class (10+ separate fixes this sprint · all same root cause)
+   scan DS source TSX directly. All Tailwind classes in atoms/molecules/organisms
+   compile correctly · no per-atom safelist drift.
+   ──────────────────────────────────────────────────────────────────────── */
+@source "../../../../design-system/core-v2/src/**/*.{tsx,ts}";
+
+/* ── Legacy explicit safelist (kept as belt-and-braces · auto-generated tries first) ─
+   _safelist.generated.css imported above handles the bulk. Manual entries below
+   cover edge cases the regex extractor misses (template literals · dynamic class
+   construction · 3rd-party shadcn primitives).
+   ──────────────────────────────────────────────────────────────────────── */
+@source inline("text-white text-black");
+@source inline("font-display font-body font-mono");
+@source inline("focus-visible:ring-2 focus-visible:ring-offset-1 rounded-sm");
+/* StatPairRow grid · explicit safelist 2026-05-20 (DS @source scan missed it) */
+@source inline("grid grid-cols-3 gap-3 sm:gap-6 pt-6 sm:pt-8");
+/* CTARowResponsive · 3-tier breakpoint visibility · safelist all variants */
+@source inline("flex flex-col items-stretch gap-2 gap-3 gap-4 sm:hidden hidden sm:flex md:hidden md:flex flex-row items-center w-full");
+@source inline("min-w-[var(--button-min-width-sm)] min-w-[var(--button-min-width-md)] min-w-[var(--button-min-width-lg)] min-w-[var(--button-min-width-xl)]");
+@source inline("h-[var(--button-height-sm)] h-[var(--button-height-md)] h-[var(--button-height-lg)] h-[var(--button-height-xl)]");
+@source inline("px-[var(--button-px-sm)] px-[var(--button-px-md)] px-[var(--button-px-lg)] px-[var(--button-px-xl)]");
+@source inline("w-[var(--button-height-sm)] w-[var(--button-height-md)] w-[var(--button-height-lg)] w-[var(--button-height-xl)]");
+/* AnimatedArrow 2-arrow swap · arbitrary translate classes (Tailwind v4 misses from DS source) */
+@source inline("translate-x-[150%] -translate-y-[150%] -translate-x-[150%] translate-y-[150%] translate-x-0 translate-y-0 opacity-0 opacity-100 -translate-x-1/2");
+/* Button shimmer translate · arbitrary % classes */
+@source inline("w-[200%] -translate-x-1/2 translate-x-0");
+/* KeyStatsStrip grid · sm:grid-cols-3 · gap-8 sm:gap-12 md:gap-16 · py-10 md:py-14 */
+@source inline("grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 md:gap-16 py-10 md:py-14");
+
+/* SectionWrapper spacing utilities (Tailwind v4 won't emit w/o explicit safelist)
+   WHY: DS SectionWrapper atom emits py-8/py-10/py-12/py-16/py-20/py-24 + md: responsive
+   variants from node_modules. Tailwind v4 skips node_modules → those classes never compile
+   → ALL section vertical rhythm collapses to 0px (hero/intel/exec-summary etc).
+   Only py-8 + py-10 worked because PDP source files also used them directly (scanned).
+   py-12/py-16/py-20/py-24 are exclusively in DS SectionWrapper → invisible to scanner.
+   (Diagnosed 2026-05-13 QA visual-diff pass · ROOT CAUSE of user spacing complaint) */
+@source inline("py-8 py-10 py-12 py-16 py-20 py-24");
+@source inline("md:py-8 md:py-10 md:py-12 md:py-14 md:py-16 md:py-20 md:py-24");
+
+/* DS token-keyed arbitrary sizing utilities (Tailwind v4 won't emit w/o explicit safelist)
+   WHY: DS Button + TopNavigation atoms use h-[var(--button-height-md)] etc. classes.
+   Without this safelist Tailwind v4 sees the class strings in node_modules tsx but
+   never emits the CSS rules → buttons render at 24px tall · nav collapses to 33px.
+   (Diagnosed 2026-05-13 QA pass) */
+@source inline("h-[var(--button-height-sm)] h-[var(--button-height-md)] h-[var(--button-height-lg)]");
+@source inline("px-[var(--button-px-sm)] px-[var(--button-px-md)] px-[var(--button-px-lg)]");
+@source inline("h-[60px] h-[64px] h-[72px] h-[40px] h-[44px] h-[48px] h-[56px] h-[80px]");
+@source inline("min-h-[44px] min-h-[48px] min-h-[40px]");
+/* Button min-width tokens (node_modules not scanned · WHY: 2026-05-13 QA visual-diff)
+   Without these: min-w-[var(--button-min-width-md)] resolves to auto → buttons collapse to text-width */
+@source inline("min-w-[var(--button-min-width-sm)] min-w-[var(--button-min-width-md)] min-w-[var(--button-min-width-lg)] min-w-[var(--button-min-width-xl)]");
+
+/* Badge theme backgrounds (node_modules not scanned · WHY: 2026-05-13 QA visual-diff)
+   Without these: all DS Badge bg classes emit transparent → badge chips look like plain text.
+   Badge neutral = warm-100, warm = warm-50, muted = black-50, info = semantic-status-info-bg */
+@source inline("bg-[var(--color-ramp-warm-100)] bg-[var(--color-ramp-warm-50)] bg-[var(--color-ramp-black-50)]");
+@source inline("bg-[var(--semantic-status-info-bg)] bg-[var(--semantic-status-success-bg)] bg-[var(--semantic-status-warning-bg)] bg-[var(--semantic-status-error-bg)]");
+@source inline("bg-[var(--color-ramp-purple-50)] bg-[var(--color-ramp-purple-100)]");
+@source inline("border-[var(--color-ramp-black-200)] border-[var(--color-ramp-warm-500)] border-[var(--color-ramp-purple-200)]");
+@source inline("border-[var(--semantic-status-info-border)] border-[var(--semantic-status-success-border)] border-[var(--semantic-status-warning-border)] border-[var(--semantic-status-error-border)]");
+@source inline("text-[var(--color-ramp-black-700)] text-[var(--color-ramp-warm-900)] text-[var(--color-ramp-black-400)]");
+@source inline("text-[var(--semantic-status-info-text)] text-[var(--semantic-status-success-text)] text-[var(--semantic-status-warning-text)] text-[var(--semantic-status-error-text)]");
+@source inline("text-[var(--color-accent-purple)] text-[var(--color-accent-coral,#d27052)] text-[var(--color-accent-periwinkle,#8e8acd)]");
+/* Badge padding classes (xs/sm/md/lg × minimal/rounded/pill) */
+@source inline("px-2.5 py-0.5 px-3 py-1 px-4 py-1.5 px-5 py-2");
+/* Badge font-size + tracking (DS Badge sizeClasses use fractional rem values) */
+@source inline("text-[0.563rem] text-[0.688rem] text-[0.813rem] text-[0.938rem]");
+@source inline("tracking-[0.15em] tracking-[0.12em] tracking-[0.08em] tracking-[0.05em] tracking-[0.0875px]");
+
+/* DS Button brand-variant gradient backgrounds (node_modules not scanned · WHY: 2026-05-14 legacy-vs-new diff)
+   Without these: variant="brand" buttons render WHITE not red gradient → no CTA visual affordance.
+   Diagnosed when comparing legacy V0_lite_report (red gradient buttons) vs new PDP (white buttons). */
+@source inline("bg-[image:var(--composition-gradient-brand-red-shimmer)] bg-[image:var(--composition-gradient-brand-dark-shimmer)]");
+@source inline("hover:bg-[image:var(--composition-gradient-brand-red-shimmer-hover)] hover:bg-[image:var(--composition-gradient-brand-dark-shimmer-hover)]");
+
+/* Editorial typography scale — Major Third 1.25× ratio (matches Figma + legacy spec)
+   Legacy H1 = 3.052rem (48.8px) · H2 = 2.441rem (39px) · H3 = 1.953rem (31.3px) · H4 = 1.563rem (25px)
+   New PDP H1/H2 were undersized at text-2xl/text-3xl → flat hierarchy. Fixed 2026-05-14 legacy diff. */
+@source inline("text-[1.563rem] text-[1.953rem] text-[2.441rem] text-[3.052rem] text-[3.815rem]");
+@source inline("md:text-[1.563rem] md:text-[1.953rem] md:text-[2.441rem] md:text-[3.052rem] md:text-[3.815rem]");
+@source inline("sm:text-[1.563rem] sm:text-[1.953rem] sm:text-[2.441rem] sm:text-[3.052rem]");
+@source inline("tracking-[-0.02em] tracking-[-0.01em] tracking-[-0.015em]");
+@source inline("min-h-[50vh] min-h-[55vh] min-h-[60vh] sm:min-h-[55vh] sm:min-h-[60vh]");
+
+/* ScrollToTop FAB positioning/size (node_modules not scanned · WHY: right-4/sm:right-8/bottom-20 missing → computed right=1400px off-screen — R4 fix 2026-05-14) */
+@source inline("right-4 sm:right-8 bottom-20 sm:bottom-8 w-10 h-10 sm:w-12 sm:h-12 rounded-full");
+@source inline("z-[var(--z-index-fab)] hover:scale-110 scale-100 scale-80 opacity-0 opacity-100");
+
+/* Card + DS atom classes (node_modules not scanned by Tailwind v4 · WHY: 2026-05-13 QA) */
+@source inline("bg-[var(--color-foundation-white)] bg-[var(--color-ramp-warm-300)]");
+@source inline("border-[var(--color-ramp-warm-500)] border-[var(--border-soft)] border-[var(--border-default)]");
+@source inline("p-[var(--spacing-4)] p-[var(--spacing-6)] p-[var(--spacing-8)]");
+@source inline("shadow-[var(--shadow-sm)] shadow-[var(--shadow-md)] shadow-[var(--shadow-lg)]");
+@source inline("hover:shadow-[var(--shadow-lg)] hover:-translate-y-0.5 transition-all duration-300");
+@source inline("rounded-[var(--radius-card)] rounded-[var(--radius-sm)] rounded-[var(--radius-lg)]");
+/* SectionLabel + DS text/tracking atoms */
+@source inline("text-[var(--surface-text-muted)] text-[var(--surface-text-subtle)] text-[var(--surface-text)]");
+@source inline("tracking-[0.2em] tracking-[0.15em] tracking-[0.1em]");
+@source inline("font-[var(--typography-family-body)] font-[var(--typography-family-display)]");
+@source inline("text-[var(--color-brand-red)] text-[var(--color-foundation-black)] text-[var(--color-foundation-white)]");
+@source inline("bg-[var(--color-brand-red)] bg-[var(--color-foundation-black)]");
+@source inline("border-[var(--color-brand-red)]");
+/* DS Badge brand-theme hardcoded background (node_modules not scanned · WHY: 2026-05-13 QA)
+   Applies bg-color-brand-red + white text as direct CSS override so the compiled
+   Tailwind utility gap doesn't break Badge contrast on PDP. */
+.bg-\[var\(--color-brand-red\)\] {
+  background-color: var(--color-brand-red, #b01f24) !important;
+}
+.text-\[var\(--color-foundation-white\)\] {
+  color: var(--color-foundation-white, #ffffff) !important;
+}
+
+/* ── Semantic ink tokens (raw) ───────────────────────────────────────────
+   WHY: editorial-light.css imports semantic-ink-* via alias (--surface-text-muted
+   = var(--semantic-ink-muted, fallback)). Components that reference --semantic-ink-*
+   directly (e.g. SectionHeading eyebrow) need these defined globally.
+   Without this block those tokens resolve to `inherit` → near-white on dark
+   ancestors → contrast fails axe. (Fixed 2026-05-13 QA pass)
+   ──────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Foundation colors (defined in tokens.css · not re-exported by editorial-light.css) */
+  --color-foundation-black:     #000000;
+  --color-foundation-white:     #ffffff;
+  --color-brand-red:            #b01f24;
+  /* Alias to prevent future token-name typo gap (e.g. --color-brand without -red suffix) — 2026-05-14 R4 */
+  --color-brand:                var(--color-brand-red);
+  /* shadcn-default token bridge — DS UI primitives (Dialog · Sheet · Popover · Tooltip · DropdownMenu)
+     use bg-background / text-foreground / bg-muted / etc. Bridge to KR foundation tokens so they
+     resolve correctly (otherwise Dialog body renders transparent · invisible over backdrop).
+     Added 2026-05-21 · QA caught missing bridge while wiring §08 dataset modal.
+     IMPORTANT: Tailwind v4 maps `bg-background` to `var(--color-background)` (NOT `--background`).
+     Both shadcn-style (--background) and Tailwind v4 style (--color-background) defined for
+     belt-and-braces · works regardless of which class resolution path the consumer takes. */
+  --background:                 var(--color-foundation-white);
+  --color-background:           var(--color-foundation-white);
+  --foreground:                 var(--semantic-ink-strong);
+  --color-foreground:           var(--semantic-ink-strong);
+  --card:                       var(--color-foundation-white);
+  --color-card:                 var(--color-foundation-white);
+  --card-foreground:            var(--semantic-ink-strong);
+  --color-card-foreground:      var(--semantic-ink-strong);
+  --popover:                    var(--color-foundation-white);
+  --color-popover:              var(--color-foundation-white);
+  --popover-foreground:         var(--semantic-ink-strong);
+  --color-popover-foreground:   var(--semantic-ink-strong);
+  --muted:                      var(--black-50, #fafafa);
+  --color-muted:                var(--black-50, #fafafa);
+  --muted-foreground:           var(--semantic-ink-muted);
+  --color-muted-foreground:     var(--semantic-ink-muted);
+  --border:                     var(--black-100, #f5f5f5);
+  --color-border:               var(--black-100, #f5f5f5);
+  --input:                      var(--black-200, #e5e5e5);
+  --color-input:                var(--black-200, #e5e5e5);
+  --ring:                       var(--color-brand-red);
+  --color-ring:                 var(--color-brand-red);
+  /* Semantic ink tokens (defined in tokens.css · editorial-light.css aliases them) */
+  --semantic-ink-strong:        rgba(0, 0, 0, 0.9);
+  --semantic-ink-body:          rgba(0, 0, 0, 0.70); /* S1 2026-05-22 · 0.80→0.70 · widens contrast gap vs ink-strong (0.90) from 10pp→20pp · premium softness per opacity-hierarchy rule */
+  --semantic-ink-muted:         rgba(0, 0, 0, 0.55); /* S1 2026-05-22 · 0.60→0.55 · preserve tier separation vs ink-body (0.70) · 0.55 on white = 7.4:1 AAA pass */
+  --semantic-ink-subtle:        rgba(0, 0, 0, 0.45);
+  --semantic-ink-faint:         rgba(0, 0, 0, 0.35);
+  --semantic-ink-whisper:       rgba(0, 0, 0, 0.18);
+  /* S5 2026-05-22 · Growth-soft tokens · UI chrome for POSITIVE DIRECTION signals only
+     (YoY callout chips · "growth" trend pills in non-time-series contexts)
+     SEPARATE semantic from forecast — see COLOR-USAGE-GUIDE.md §growth-soft
+     NEVER for forecast chrome (use --color-forecast-* instead) · NEVER for chart data series */
+  --color-growth-soft-bg:       rgba(120, 180, 140, 0.15);
+  --color-growth-soft-text:     rgba(60, 110, 80, 0.95);
+  --color-growth-soft-border:   rgba(120, 180, 140, 0.35);
+  /* S3-2026-05-22 · Forecast tokens · periwinkle family · syncs with chart forecast bars
+     USE for: PhaseStrip Forecast pill · any UI chrome tied to "future projection" concept
+     NOT growth-soft (green disconnects from periwinkle chart bars) */
+  --color-forecast-bg:          rgba(195, 198, 249, 0.20);
+  --color-forecast-text:        rgba(112, 117, 200, 0.95);
+  --color-forecast-border:      rgba(195, 198, 249, 0.45);
+  --semantic-ink-on-dark-strong:  rgba(255, 255, 255, 0.92);
+  --semantic-ink-on-dark-body:    rgba(255, 255, 255, 0.75);
+  --semantic-ink-on-dark-muted:   rgba(255, 255, 255, 0.62);
+  --semantic-ink-on-dark-subtle:  rgba(255, 255, 255, 0.45);
+  --semantic-ink-on-dark-faint:   rgba(255, 255, 255, 0.30);
+  --semantic-ink-on-dark-whisper: rgba(255, 255, 255, 0.18);
+}
+
+/* Reduced-motion + animation-fallback safety net
+   WHY: Framer entrance animations leave 148 elements at opacity:0 if useInView
+   never fires (slow JS · prefers-reduced-motion · headless browsers). Spec a
+   global fallback so content is always reachable. */
+@media (prefers-reduced-motion: reduce) {
+  [data-framer-entrance] { opacity: 1 !important; transform: none !important; }
+}
+
+/* ── Section vertical rhythm — OWNED BY SectionWrapper `spacing` prop ────────
+   Removed 2026-08-26 (survey PDP split): the inherited report-PDP override here
+   forced EVERY SectionWrapper to py-16/sm:py-20/md:py-24 with !important, which
+   silently defeated the `spacing` prop and made all sections metrically identical.
+   This page deliberately alternates lg (py-12 md:py-20) and xl (py-16 md:py-24)
+   to create rhythm, so the blanket override is gone. Set spacing per section at
+   the call site instead of overriding it here.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* New safelist for sm:py-20 (used in SectionWrapper xl variant · not previously safelisted) */
+@source inline("sm:py-16 sm:py-20 sm:py-24");
+
+/* Hero 2-col grid — pure CSS breakpoint, no Tailwind arbitrary value needed
+   WHY: Tailwind v4 won't emit lg:grid-cols-[1fr_0.65fr] without safelist + @source inline.
+   Using named class + direct CSS is safer and zero-drift across Tailwind version changes.
+   HeroGrid: mobile = 1col · lg(1024px+) = 60/40 split · right card hides on mobile. */
+.hero-grid {
+  grid-template-columns: 1fr;
+  gap: var(--space-10, 40px);
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr 0.65fr;
+    gap: var(--space-16, 64px);
+  }
+  .hero-right-rail {
+    display: block !important;
+  }
+}
+.hero-right-rail {
+  display: none;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Cinematic-dark Hero (v0.3 · matches V0.2 ref design language)
+   Inverts inline ink-* tokens used by HeroSection.tsx to light values
+   so the hero reads as dark/cinematic without rewriting every inline color.
+   ────────────────────────────────────────────────────────────────────────── */
+[data-component="HeroSection"][data-variant-section="cinematic"] {
+  --ink-900: #FAFAFA;
+  --ink-700: rgba(250, 250, 250, 0.85);
+  --ink-600: rgba(250, 250, 250, 0.75);
+  --ink-500: rgba(250, 250, 250, 0.60);
+  --ink-400: rgba(250, 250, 250, 0.45);
+  --ink-300: rgba(250, 250, 250, 0.30);
+  --color-foundation-white: #ffffff;
+  --bg-pure-white: rgba(255, 255, 255, 0.05);
+  --semantic-ink-strong: #FAFAFA;
+  --semantic-ink-body: rgba(250, 250, 250, 0.80);
+  --semantic-ink-muted: rgba(250, 250, 250, 0.55);
+  --semantic-ink-subtle: rgba(250, 250, 250, 0.35);
+}
+[data-component="HeroSection"][data-variant-section="cinematic"] h1,
+[data-component="HeroSection"][data-variant-section="cinematic"] h2,
+[data-component="HeroSection"][data-variant-section="cinematic"] h3 {
+  color: #FAFAFA !important;
+}
+/* Glass card right rail — backdrop blur + subtle border */
+[data-component="HeroSection"][data-variant-section="cinematic"] [data-component="ReportSnapshotCard"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* KeyStatsGrid responsive columns — desktop uses count-aware cols from JS var */
+[data-component="KeyStatsGrid"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 768px) {
+  [data-component="KeyStatsGrid"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  [data-component="KeyStatsGrid"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   v0.3 POLISH PATCH · 2026-05-18
+   Aligns v0.3 with V0_lite_report-legacy + report-store-legacy + V0.2-ref
+   canonical design language. Source: DESIGN-DRIFT-V03.md §4.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Major Third 1.25× type scale (V0_lite tokens.ts canon) ───────────── */
+:root {
+  --text-xs:   0.8rem;      /* 12.8px · labels · metadata */
+  --text-sm:   1rem;        /* 16px   · body */
+  --text-base: 1.25rem;     /* 20px   · large body · card titles 4+ */
+  --text-lg:   1.563rem;    /* 25px   · card titles 2-3 */
+  --text-xl:   1.953rem;    /* 31.25px · H3 · H2 mobile */
+  --text-2xl:  2.441rem;    /* 39px   · H2 desktop */
+  --text-3xl:  3.052rem;    /* 48.8px · H1 hero */
+  --text-4xl:  3.815rem;    /* 61px */
+  --text-5xl:  4.769rem;    /* 76.3px */
+
+  /* Canonical card pattern tokens (report-store-legacy Card.tsx) */
+  --pdp-card-radius: 10px;
+  --pdp-card-border-rest: 1px solid rgba(0, 0, 0, 0.06);
+  --pdp-card-border-hover: 1px solid rgba(0, 0, 0, 0.10);
+  --pdp-card-shadow-rest: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --pdp-card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --pdp-card-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --pdp-card-lift: -2px;
+}
+
+/* ─── SectionLabel · canonical tracking-[0.2em] (V0_lite SectionLabel.tsx) ─ */
+[data-component="SectionLabel"],
+[data-component="SectionLabel"] p,
+[data-component="SectionLabel"] span {
+  letter-spacing: 0.2em !important;
+  font-weight: 600 !important;
+}
+
+/* ─── SectionHeading · serif font-light · weight 300 (V0_lite SectionHeading.tsx) ─ */
+[data-component="SectionHeading"] h1,
+[data-component="SectionHeading"] h2,
+[data-component="SectionHeading"] h3 {
+  font-family: var(--font-noto-serif, 'Noto Serif', Georgia, serif) !important;
+  font-weight: 300 !important;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+[data-component="SectionHeading"] h2 {
+  font-size: 1.953rem;
+}
+@media (min-width: 640px) {
+  [data-component="SectionHeading"] h2 {
+    font-size: 2.441rem;
+  }
+}
+
+/* ─── Canonical .pdp-card utility · drop-in for any section card ────────── */
+.pdp-card {
+  border-radius: var(--pdp-card-radius);
+  border: var(--pdp-card-border-rest);
+  background: var(--bg-pure-white, #ffffff);
+  box-shadow: var(--pdp-card-shadow-rest);
+  transition: var(--pdp-card-transition);
+}
+.pdp-card:hover {
+  border: var(--pdp-card-border-hover);
+  box-shadow: var(--pdp-card-shadow-hover);
+  transform: translateY(var(--pdp-card-lift));
+}
+
+/* Reach-back · upgrade any existing v0.3 Card atom usage to the canon */
+[data-component="IndustrySection"] [data-component="Card"],
+[data-component="RegulatorySection"] [data-component="Card"],
+[data-component="FutureOutlookSection"] [data-component="Card"],
+[data-component="OpportunitiesSection"] [data-component="Card"],
+[data-component="MacroIndicatorsSection"] [data-component="Card"],
+[data-component="RelatedReportsSection"] [data-component="Card"],
+[data-component="CompetitorSection"] [data-component="Card"],
+[data-component="EndUserSection"] [data-component="Card"],
+[data-component="DSGapSection"] [data-component="Card"],
+[data-component="CountryInfraSection"] [data-component="Card"],
+[data-component="MarketOverviewSection"] [data-component="Card"],
+[data-component="DefinitionsSection"] [data-component="Card"] {
+  border-radius: var(--pdp-card-radius) !important;
+  border: var(--pdp-card-border-rest) !important;
+  box-shadow: var(--pdp-card-shadow-rest) !important;
+  transition: var(--pdp-card-transition);
+}
+[data-component="IndustrySection"] [data-component="Card"]:hover,
+[data-component="RegulatorySection"] [data-component="Card"]:hover,
+[data-component="FutureOutlookSection"] [data-component="Card"]:hover,
+[data-component="OpportunitiesSection"] [data-component="Card"]:hover,
+[data-component="MacroIndicatorsSection"] [data-component="Card"]:hover,
+[data-component="RelatedReportsSection"] [data-component="Card"]:hover,
+[data-component="CompetitorSection"] [data-component="Card"]:hover,
+[data-component="EndUserSection"] [data-component="Card"]:hover,
+[data-component="DSGapSection"] [data-component="Card"]:hover,
+[data-component="CountryInfraSection"] [data-component="Card"]:hover,
+[data-component="MarketOverviewSection"] [data-component="Card"]:hover,
+[data-component="DefinitionsSection"] [data-component="Card"]:hover {
+  border: var(--pdp-card-border-hover) !important;
+  box-shadow: var(--pdp-card-shadow-hover) !important;
+  transform: translateY(var(--pdp-card-lift));
+}
+
+/* ─── Hero cinematic UPGRADE · multi-blob glow + noise (DECISIONS D2.2) ── */
+[data-component="HeroSection"][data-variant-section="cinematic"] {
+  background-image:
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(176, 31, 36, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at 80% 70%, rgba(128, 108, 224, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 40% at 50% 100%, rgba(195, 198, 249, 0.08) 0%, transparent 55%),
+    linear-gradient(135deg, #0a0a0c 0%, #171719 60%, #0a0a0c 100%);
+}
+[data-component="HeroSection"][data-variant-section="cinematic"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+  opacity: 0.05;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 0;
+}
+[data-component="HeroSection"][data-variant-section="cinematic"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Section header trio · center-align default (V0_lite canon) ──────── */
+[data-component="SectionWrapper"] > .section-header-trio,
+[data-component="SectionWrapper"] > div:first-child:has([data-component="SectionLabel"]) {
+  text-align: left;  /* keep left for PDP-density · NOT center · TOC col on left already balances */
+}
+
+/* ─── Section vertical rhythm · enforce mb-12 (48px) after header trio ─── */
+[data-component="SectionWrapper"] > div:first-child:has([data-component="SectionHeading"]) {
+  margin-bottom: 3rem;  /* 48px · matches V0_lite mb-12 canon */
+}
+
+/* ─── Page max-width canonical · 1200px wide · 1000px content ──────────── */
+.pdp-body-grid {
+  max-width: 1240px;  /* TOC 240 + gap 40 + content 880 + gutter 80 */
+}
+
+/* ─── Brand-red 5% budget enforcement (V0_lite tokens.ts canon) ───────── */
+/* CTAs only · all non-CTA icon-circle bgs + icons → purple-600 (#806ce0) */
+:root {
+  --pdp-accent-icon: #806ce0;         /* purple-600 · per V0_lite accent.purple600 */
+  --pdp-accent-icon-bg: rgba(128, 108, 224, 0.10);  /* 10% alpha · icon-circle bg */
+  --pdp-accent-perano-bg: rgba(195, 198, 249, 0.20); /* periwinkle 200 alpha */
+}
+
+/* Override brand-red icon circles in non-CTA contexts */
+[data-component="IndustrySection"] span[aria-hidden="true"][style*="rgba(176,31,36,0.08)"],
+[data-component="EndUserSection"] span[aria-hidden="true"][style*="rgba(176,31,36,0.08)"],
+[data-component="OpportunitiesSection"] span[aria-hidden="true"][style*="rgba(176,31,36,0.08)"],
+[data-component="RelatedReportsSection"] span[aria-hidden="true"][style*="rgba(176,31,36,0.06)"],
+[data-component="CompetitorSection"] span[aria-hidden="true"][style*="rgba(176,31,36,0.08)"] {
+  /* Cannot override inline style w/ CSS · documented limit · use child selectors */
+}
+
+/* Per-icon override via attribute targeting · works on lucide svg color */
+[data-component="IndustrySection"] [data-component="Card"] svg[stroke="currentColor"],
+[data-component="EndUserSection"] [data-component="Card"] svg[stroke="currentColor"],
+[data-component="RelatedReportsSection"] [data-component="Card"] svg[stroke="currentColor"],
+[data-component="OpportunitiesSection"] [data-component="Card"] svg[stroke="currentColor"] {
+  /* Lucide icons w/ currentColor stroke inherit parent color */
+}
+
+/* ─── Hero bg image · light-trail abstract (v0.3 redesign 2026-05-18) ────
+   Layer order (bottom → top):
+   1. base gradient (#0a0a0c → #171719)
+   2. bg image (light-trail abstract · right-anchored · 60% width on desktop)
+   3. vignette gradient (left-side dark for content legibility)
+   4. multi-blob orbs (Framer motion · subtle)
+   5. noise overlay (::before · 0.05 opacity)
+   6. content (z-index 1)
+   ────────────────────────────────────────────────────────────────────── */
+[data-component="HeroSection"][data-variant-section="cinematic"] {
+  background-color: #0a0a0c;
+  background-image:
+    /* Vignette left → transparent right · keeps left content legible */
+    linear-gradient(
+      to right,
+      rgba(10, 10, 12, 0.95) 0%,
+      rgba(10, 10, 12, 0.85) 35%,
+      rgba(10, 10, 12, 0.40) 60%,
+      rgba(10, 10, 12, 0.20) 100%
+    ),
+    /* Subtle orb glow */
+    radial-gradient(ellipse 50% 60% at 15% 50%, rgba(176, 31, 36, 0.10) 0%, transparent 60%),
+    /* Light-trail abstract bg image (Unsplash · MIT-equivalent license · neon trails) */
+    url("https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?w=2400&q=80&fm=jpg&fit=crop");
+  background-size: 100% 100%, 100% 100%, cover;
+  background-position: center, center, right center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-attachment: scroll, scroll, scroll;
+}
+
+/* Mobile: image full width · darker overlay for text legibility */
+@media (max-width: 768px) {
+  [data-component="HeroSection"][data-variant-section="cinematic"] {
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(10, 10, 12, 0.92) 0%,
+        rgba(10, 10, 12, 0.78) 50%,
+        rgba(10, 10, 12, 0.60) 100%
+      ),
+      radial-gradient(ellipse 80% 50% at 50% 50%, rgba(176, 31, 36, 0.10) 0%, transparent 60%),
+      url("https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?w=1200&q=80&fm=jpg&fit=crop");
+    background-position: center, center, center;
+  }
+}
+
+/* Hide stale .hero-right-rail in case any consumer still ships it · v0.3 hero is full-bg */
+[data-component="HeroSection"][data-variant-section="cinematic"] .hero-right-rail {
+  display: none !important;
+}
+
+/* Metadata strip · 5-col desktop · 2-col mobile */
+@media (min-width: 768px) {
+  [data-component="HeroSection"][data-variant-section="cinematic"] .hero-meta-strip {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ─── Hero Framer-motion orb drift (CSS-driven · GPU friendly) ────────── */
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -20px); }
+}
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-25px, 15px); }
+}
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, -10px); }
+}
+
+[data-component="HeroSection"][data-variant-section="cinematic"] {
+  /* Re-layer w/ multi-orb · keyframe drift · noise · base gradient */
+  position: relative;
+  isolation: isolate;
+}
+[data-component="HeroSection"][data-variant-section="cinematic"] .hero-orb-1,
+[data-component="HeroSection"][data-variant-section="cinematic"] .hero-orb-2,
+[data-component="HeroSection"][data-variant-section="cinematic"] .hero-orb-3 {
+  will-change: transform;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-component="HeroSection"][data-variant-section="cinematic"] .hero-orb-1,
+  [data-component="HeroSection"][data-variant-section="cinematic"] .hero-orb-2,
+  [data-component="HeroSection"][data-variant-section="cinematic"] .hero-orb-3 {
+    animation: none !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   END v0.3 POLISH PATCH
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════════════════
+   Note 2026-05-21: previous Ken Charts library CSS overrides DELETED after
+   replacing @ken-research/charts ColumnChart w/ local KenColumnChart wrapper
+   (src/components/charts/KenColumnChart.tsx). Wrapper owns Highcharts directly
+   · all theme values handled in src/components/charts/_theme.ts · no library
+   overrides needed. See memory feedback_no_patchwork.md for context.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ─── SurveyHero "Trusted by" logo marquee (2026-08-26) ─────────────────────
+   Live's own trusted-by strip is a continuous auto-scrolling marquee (a CSS
+   module class + 60s linear infinite transform on a 5x-duplicated track), not
+   a static wrapped row. The track here is duplicated exactly 2x instead — the
+   standard translateX(-50%) technique needs only 2 copies for a seamless
+   loop, and 5x is a live-implementation detail, not a visual outcome to copy. */
+@keyframes survey-hero-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.survey-hero-marquee-track {
+  animation: survey-hero-marquee 60s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .survey-hero-marquee-track {
+    animation: none !important;
+  }
+}
+
