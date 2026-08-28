@@ -15,7 +15,7 @@
  *        matching the alternation every design-system/recipes/* sequence uses.
  */
 
-import { Navbar, Footer, FAQSection } from '@kenresearch/design-system/organisms';
+import { Navbar, Footer, FAQSection } from '@/vendor/design-system/organisms';
 import { PageProgressBar } from '@/components/chrome/PageProgressBar';
 import { SurveyHero } from '@/components/survey-sections/SurveyHero';
 import { ContextRelevanceSection } from '@/components/survey-sections/ContextRelevanceSection';

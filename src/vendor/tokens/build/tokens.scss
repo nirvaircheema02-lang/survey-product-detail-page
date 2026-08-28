@@ -1,0 +1,289 @@
+
+// Do not edit directly, this file was auto-generated.
+
+$color-foundation-black: #000000; // Foundation black — 92% usage surface
+$color-foundation-white: #ffffff; // Foundation white — 92% usage surface
+$color-brand-red: #b01f24; // Ken Red — CTAs ONLY (5% usage). Never use for decoration.
+$color-accent-purple: #806ce0; // Purple accent — shadows and highlights only (3% usage)
+$color-accent-periwinkle: #c3c6f9; // Periwinkle accent — light tint for subtle highlights
+$color-accent-perano: #dfeafa; // Perano light blue — very subtle accent tint
+$color-accent-warm: #d9d1ce; // Warm neutral accent — borders and muted backgrounds
+$color-accent-teal: #00e5ff; // Cinematic dark variant only — glow/neon accent
+$color-ramp-red-50: #fef2f2;
+$color-ramp-red-100: #fee2e2;
+$color-ramp-red-200: #fecaca;
+$color-ramp-red-300: #fca5a7;
+$color-ramp-red-400: #f87176;
+$color-ramp-red-500: #dc3238;
+$color-ramp-red-600: #b01f24;
+$color-ramp-red-700: #8f181d;
+$color-ramp-red-800: #771419;
+$color-ramp-red-900: #5f1014;
+$color-ramp-black-50: #fafafa;
+$color-ramp-black-100: #f5f5f5;
+$color-ramp-black-200: #e5e5e5;
+$color-ramp-black-300: #d4d4d4;
+$color-ramp-black-400: #a3a3a3;
+$color-ramp-black-500: #737373;
+$color-ramp-black-600: #525252;
+$color-ramp-black-700: #404040;
+$color-ramp-black-800: #262626;
+$color-ramp-black-900: #171717;
+$color-ramp-white-800: #f5f5f5;
+$color-ramp-white-900: #fafafa;
+$color-ramp-warm-50: #fefdfd;
+$color-ramp-warm-100: #fcfbfa;
+$color-ramp-warm-200: #f9f7f6;
+$color-ramp-warm-300: #f5f2f1;
+$color-ramp-warm-400: #f0ebe9;
+$color-ramp-warm-500: #eae5e3;
+$color-ramp-warm-600: #d9d1ce;
+$color-ramp-warm-700: #c8bcb8;
+$color-ramp-warm-800: #b7a9a3;
+$color-ramp-warm-900: #a6968e;
+$color-ramp-purple-50: #f7f6fe;
+$color-ramp-purple-100: #efedfd;
+$color-ramp-purple-200: #dfdcfb;
+$color-ramp-purple-300: #c4bef7;
+$color-ramp-purple-400: #a89ff2;
+$color-ramp-purple-500: #9488ec;
+$color-ramp-purple-600: #806ce0;
+$color-ramp-purple-700: #6c5bc0;
+$color-ramp-purple-800: #5a4ba0;
+$color-ramp-purple-900: #483c80;
+$color-ramp-periwinkle-50: #fafbfe;
+$color-ramp-periwinkle-100: #f5f6fd;
+$color-ramp-periwinkle-200: #ebedfb;
+$color-ramp-periwinkle-300: #dfe1f9;
+$color-ramp-periwinkle-400: #d3d5f9;
+$color-ramp-periwinkle-500: #c3c6f9;
+$color-ramp-periwinkle-600: #a7abf0;
+$color-ramp-periwinkle-700: #8b90e0;
+$color-ramp-periwinkle-800: #7075c8;
+$color-ramp-periwinkle-900: #5a5fa0;
+$color-ramp-perano-50: #fcfdfe;
+$color-ramp-perano-100: #f9fbfe;
+$color-ramp-perano-200: #f4f8fd;
+$color-ramp-perano-300: #eff5fc;
+$color-ramp-perano-400: #e9f2fb;
+$color-ramp-perano-500: #dfeafa;
+$color-ramp-perano-600: #c8dff5;
+$color-ramp-perano-700: #a7c9ed;
+$color-ramp-perano-800: #86b3e5;
+$color-ramp-perano-900: #6b94c0;
+$color-ramp-coral-50: #fffbf9;
+$color-ramp-coral-100: #fff5f1;
+$color-ramp-coral-200: #ffebe4;
+$color-ramp-coral-300: #fdd7cb;
+$color-ramp-coral-400: #fbb8a7;
+$color-ramp-coral-500: #f99b85;
+$color-ramp-coral-600: #ea7a5f;
+$color-ramp-coral-700: #d96548;
+$color-ramp-coral-800: #c15138;
+$color-ramp-coral-900: #a23f2d;
+$semantic-ink-strong: rgba(0, 0, 0, 0.9); // Primary headings, hover state
+$semantic-ink-body: rgba(0, 0, 0, 0.8); // Body text, list-card titles
+$semantic-ink-muted: rgba(0, 0, 0, 0.6); // Secondary text, dek
+$semantic-ink-subtle: rgba(0, 0, 0, 0.45); // Meta lines, eyebrow color, link tier
+$semantic-ink-faint: rgba(0, 0, 0, 0.35); // Counts, ranks, very-muted
+$semantic-ink-whisper: rgba(0, 0, 0, 0.18); // Dot separators, dividers as text-color
+$semantic-ink-on-dark-strong: rgba(255, 255, 255, 0.92);
+$semantic-ink-on-dark-body: rgba(255, 255, 255, 0.75);
+$semantic-ink-on-dark-muted: rgba(255, 255, 255, 0.62); // Dek, secondary text
+$semantic-ink-on-dark-subtle: rgba(255, 255, 255, 0.45); // Eyebrow, counts
+$semantic-ink-on-dark-faint: rgba(255, 255, 255, 0.3);
+$semantic-ink-on-dark-whisper: rgba(255, 255, 255, 0.18);
+$semantic-hairline-strong: rgba(0, 0, 0, 0.18); // Hover-state borders
+$semantic-hairline-default: rgba(0, 0, 0, 0.12);
+$semantic-hairline-soft: rgba(0, 0, 0, 0.08); // Default card border
+$semantic-hairline-faint: rgba(0, 0, 0, 0.07); // Subtle dividers
+$semantic-hairline-on-dark-default: rgba(255, 255, 255, 0.12);
+$semantic-hairline-on-dark-soft: rgba(255, 255, 255, 0.1);
+$semantic-hairline-on-dark-faint: rgba(255, 255, 255, 0.06);
+$semantic-surface-tint-soft: rgba(0, 0, 0, 0.03); // Hover row
+$semantic-surface-tint-default: rgba(0, 0, 0, 0.04); // Selected row
+$semantic-surface-tint-strong: rgba(0, 0, 0, 0.06); // Active row
+$semantic-surface-black: #000000; // Pure black — closes --black token gap (theme.css max was --black-900: #171717)
+$semantic-surface-white: #ffffff;
+$semantic-surface-white-glass: rgba(255, 255, 255, 0.95); // Sticky bars w/ backdrop-filter blur
+$semantic-surface-white-glass-soft: rgba(255, 255, 255, 0.85);
+$semantic-surface-cinematic-1: #1a1a1c; // Toaster, dark surface tint between --black-800 + --black-900
+$semantic-surface-cinematic-2: #111113;
+$semantic-scrim: rgba(0, 0, 0, 0.5); // Modal / sheet backdrop overlay
+$semantic-brand-red-alpha-12: rgba(176, 31, 36, 0.12);
+$semantic-brand-red-alpha-30: rgba(176, 31, 36, 0.3);
+$semantic-brand-red-alpha-65: rgba(176, 31, 36, 0.65); // Image-overlay 'Featured' badge bg (WCAG AAA over images)
+$semantic-brand-red-alpha-80: rgba(176, 31, 36, 0.8); // Image-overlay 'Featured' badge border
+$semantic-section-bg-primary: #ffffff; // Primary section background — default white, most sections
+$semantic-section-bg-accent: #f5f2f1; // Accent section background — warm-300, alternation breaks
+$semantic-section-bg-contrast: #000000; // Contrast section background — black, hero/resources/dark testimonials
+$semantic-section-bg-mesh: rgba(0, 0, 0, 0); // Mesh-rendered section bg — transparent (DarkGradientMesh component supplies bg)
+$semantic-status-success-text: #166534;
+$semantic-status-success-bg: #f0fdf4;
+$semantic-status-success-border: #bbf7d0;
+$semantic-status-success-bg-hover: #dcfce7;
+$semantic-status-success-border-hover: #86efac;
+$semantic-status-warning-text: #92400e;
+$semantic-status-warning-bg: #fffbeb;
+$semantic-status-warning-border: #fde68a;
+$semantic-status-warning-bg-hover: #fef3c7;
+$semantic-status-warning-border-hover: #fcd34d;
+$semantic-status-error-text: #991b1b;
+$semantic-status-error-bg: #fef2f2;
+$semantic-status-error-border: #fecaca;
+$semantic-status-error-bg-hover: #fee2e2;
+$semantic-status-error-border-hover: #fca5a5;
+$semantic-status-info-text: #1e40af;
+$semantic-status-info-bg: #eff6ff;
+$semantic-status-info-border: #bfdbfe;
+$semantic-status-info-bg-hover: #dbeafe;
+$semantic-status-info-border-hover: #93c5fd;
+$typography-family-display: 'Noto Serif', Georgia, 'Times New Roman', serif; // Headings, hero, editorial — never use for body/buttons/nav
+$typography-family-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; // Body text, UI elements, buttons, labels, navigation
+$typography-family-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace; // Code and data display
+$typography-size-2xs: 0.75rem; // 12px — navbar text, micro labels when 12.8px too large
+$typography-size-xs: 0.8rem; // 12.8px — labels, metadata, categories, section eyebrows
+$typography-size-compact: 0.875rem; // 14px — compact body text, challenges with 4+ cards
+$typography-size-nav-helper: 0.8125rem; // 13px — secondary nav lines, inline help, dropdown sub-labels (gap added 2026-05-08)
+$typography-size-nav: 0.875rem; // 14px — navigation elements, TOC items, compact CTAs, button text
+$typography-size-nav-primary: 0.875rem; // 14px — primary nav text alias (= nav). Used by topnav-v32 navbar. Promoted 2026-05-08.
+$typography-size-sm: 1rem; // 16px — standard body text, descriptions, paragraphs (90% of text)
+$typography-size-base: 1.25rem; // 20px — large body text, card titles (4+ cards)
+$typography-size-lg: 1.563rem; // 25px — card titles (2-3 cards)
+$typography-size-xl: 1.953rem; // 31.25px — subsection headings (h3), engagement objectives, methodology steps
+$typography-size-2xl: 2.441rem; // 39px — section headings (h2), main sections standard
+$typography-size-3xl: 3.052rem; // 48.8px — hero h1, final CTA h2 — reserved for hero moments only
+$typography-size-4xl: 3.815rem; // 61px — extra large headings, challenge card numbers when <4 cards
+$typography-size-5xl: 4.768rem; // 76.3px — massive headings, future use
+$typography-weight-light: 300;
+$typography-weight-normal: 400;
+$typography-weight-medium: 500;
+$typography-weight-bold: 700;
+$typography-weight-black: 900;
+$typography-line-height-tight: 1.1; // Display / 4xl-5xl headings
+$typography-line-height-snug: 1.3; // Section headings (2xl)
+$typography-line-height-normal: 1.5; // Card titles, compact text
+$typography-line-height-relaxed: 1.6; // Body text, descriptions
+$typography-line-height-nav-helper: 1.4; // Nav helper-text line-height (13px). Promoted from topnav-v32 2026-05-08.
+$typography-line-height-nav-primary: 1.4; // Nav primary-text line-height (14px). Promoted from topnav-v32 2026-05-08.
+$container-page: 75rem; // 1200px — full page shell, hero backgrounds, navbar
+$container-content: 62.5rem; // 1000px — standard sections, card grids, main content
+$container-narrow: 56.25rem; // 900px — CTAs, testimonials, focused content
+$container-prose: 43.75rem; // 700px — paragraph text, body copy (65-75 chars per line)
+$container-compact: 37.5rem; // 600px — tight descriptions, methodology blurbs
+$padding-mobile: 1rem; // 16px — mobile horizontal padding (px-4)
+$padding-tablet: 1.5rem; // 24px — tablet horizontal padding (sm:px-6)
+$padding-desktop: 2rem; // 32px — desktop horizontal padding (md:px-8)
+$radius-image: 2.5px; // Images, photos, visual media
+$radius-button: 5px; // Buttons, small cards, badges
+$radius-card: 10px; // Big cards, containers, sections
+$radius-pill: 9999px; // Full pill / capsule shape
+$variant-cinematic-bg-deep: #0a0a0c; // Primary dark background
+$variant-cinematic-bg-darker: #050506; // Deeper background, hero underlays
+$variant-cinematic-bg-surface: #111114; // Card/section surface on dark bg
+$variant-cinematic-text-primary: #fafafa; // Primary text on dark surface
+$variant-cinematic-text-secondary: rgba(250, 250, 250, 0.65); // Secondary / subdued text on dark surface
+$variant-cinematic-text-muted: rgba(250, 250, 250, 0.4); // Muted / disabled text on dark surface
+$variant-cinematic-accent-primary: #b01f24; // Ken red CTA — same as brand.red, dark-surface use
+$variant-cinematic-accent-secondary: #806ce0; // Purple accent on dark surface
+$variant-cinematic-accent-tertiary: #c62d31; // Red gradient end, dark surface
+$variant-cinematic-accent-teal: #00e5ff; // Cinematic-only neon glow accent — never use on editorial light
+$variant-editorial-bg-warm: #f5f2f1; // Primary editorial background (warm-300)
+$variant-editorial-bg-white: #ffffff; // White card/section surface
+$variant-editorial-bg-black-pure: #000000; // Pure black sections on editorial surface
+$variant-editorial-text-primary: #000000; // Primary text on light surface
+$variant-editorial-text-secondary: rgba(0, 0, 0, 0.6); // Secondary/description text on light surface
+$composition-gradient-cinematic-base: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%); // Vertical vignette base for cinematic-dark sections
+$composition-gradient-cinematic-overlay-tl: radial-gradient(circle at top left, rgba(76,95,215,0.15) 0%, rgba(76,95,215,0.075) 30%, transparent 60%); // Top-left purple overlay, blur 80px, screen blend
+$composition-gradient-cinematic-overlay-tr: radial-gradient(circle at top right, rgba(124,58,237,0.18) 0%, rgba(124,58,237,0.09) 30%, transparent 60%); // Top-right violet overlay, blur 90px, screen blend
+$composition-gradient-cinematic-overlay-bl: radial-gradient(circle at bottom left, rgba(5,150,105,0.14) 0%, rgba(5,150,105,0.07) 30%, transparent 60%); // Bottom-left green overlay, blur 75px, screen blend
+$composition-gradient-cinematic-overlay-br: radial-gradient(circle at bottom right, rgba(194,65,12,0.16) 0%, rgba(194,65,12,0.08) 30%, transparent 60%); // Bottom-right orange overlay, blur 85px, screen blend
+$composition-gradient-cinematic-overlay-center: radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 60%); // Center white diffusion, blur 60px
+$composition-gradient-editorial-warm-vignette: linear-gradient(180deg, #faf9f8 0%, #f5f2f1 40%, #faf9f8 100%); // Editorial warm sweep — promoted from --bg-composition-warm-editorial (was theme.css orphan)
+$composition-gradient-brand-red-cta: linear-gradient(90deg, #b01f24 0%, #c62d31 100%); // Ken red CTA gradient — primary button base
+$composition-gradient-brand-red-shimmer: linear-gradient(90deg, #b01f24 0%, #eb484e 50%, #b01f24 100%); // Animated CTA shimmer — useShimmer hook drives
+$composition-gradient-brand-dark-shimmer: linear-gradient(90deg, #141016 0%, #656565 50%, #141016 100%); // Dark surface shimmer — secondary button base
+$composition-gradient-navbar-hover-glow-narrow: radial-gradient(ellipse 32.5px 15.5px at center, rgba(128,108,224,1) 0%, rgba(128,108,224,0) 100%); // Narrow nav-link hover bloom (purple)
+$composition-gradient-navbar-hover-glow-wide: radial-gradient(ellipse 72.78px 15.5px at center, rgba(128,108,224,1) 0%, rgba(128,108,224,0) 100%); // Wide nav-link hover bloom (purple)
+$composition-gradient-carousel-mask-left: linear-gradient(to right, var(--section-bg-current, #f5f2f1), transparent); // Carousel left fade — auto-matches parent --section-bg-current
+$composition-gradient-carousel-mask-right: linear-gradient(to left, var(--section-bg-current, #f5f2f1), transparent); // Carousel right fade — auto-matches parent --section-bg-current
+$composition-blur-cinematic-tl: 80px; // DarkGradientMesh top-left overlay blur
+$composition-blur-cinematic-tr: 90px;
+$composition-blur-cinematic-bl: 75px;
+$composition-blur-cinematic-br: 85px;
+$composition-blur-cinematic-center: 60px;
+$composition-blur-glass: 12px; // .glass utility backdrop-filter blur
+$chart-palette-1: #b01f24; // Primary series — Ken red
+$chart-palette-2: #262626; // Secondary — black-800 (foundation neutral)
+$chart-palette-3: #806ce0; // Tertiary — purple accent (3% slot)
+$chart-palette-4: #a6968e; // Quaternary — warm-900 (foundation tint)
+$chart-palette-5: #c3c6f9; // Quinary — periwinkle accent
+$chart-palette-6: #d96548; // Senary — coral-700 (warm accent)
+$chart-palette-7: #737373; // Septenary — black-500
+$chart-palette-8: #dfeafa; // Octonary — perano-500 (subtle)
+$chart-axis-label: rgba(0, 0, 0, 0.6); // Highcharts axis label color (= --semantic-ink-muted)
+$chart-axis-title: rgba(0, 0, 0, 0.8); // Highcharts axis title color (= --semantic-ink-body)
+$chart-gridline-color: rgba(0, 0, 0, 0.08); // Highcharts gridline (= --semantic-hairline-soft)
+$chart-gridline-width: 1px;
+$chart-tooltip-bg: #000000; // Highcharts tooltip backdrop
+$chart-tooltip-text: #ffffff;
+$chart-tooltip-radius: 5px;
+$chart-line-width: 2px; // Default series stroke
+$motion-duration-instant: 100; // ms — micro feedback (button press)
+$motion-duration-fast: 200; // ms — hover, focus, simple transitions
+$motion-duration-normal: 300; // ms — default UI transitions
+$motion-duration-slow: 500; // ms — section reveals, modals
+$motion-duration-slower: 800; // ms — hero entrance, cinematic timeline
+$motion-duration-slowest: 1200; // ms — long-form scroll-driven animations
+$motion-easing-linear: linear; // $type=fontFamily is DTCG hack for string passthrough until easing $type lands
+$motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1); // Default UI exit
+$motion-easing-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); // Hero entrance, expressive reveals
+$motion-easing-ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1); // Symmetric two-way transitions
+$motion-easing-ease-spring: cubic-bezier(0.5, 1.5, 0.5, 1); // Bouncy snap (use sparingly)
+$motion-stagger-tight: 40; // ms — tight card stagger
+$motion-stagger-default: 80; // ms — default Framer staggerChildren
+$motion-stagger-loose: 150; // ms — max stagger before feels disjointed
+$shadow-sm: rgba(0, 0, 0, 0.05); // Subtle inset depth
+$shadow-md: rgba(0, 0, 0, 0.1); // Default card lift
+$shadow-lg: rgba(0, 0, 0, 0.1); // Hover state, modal
+$shadow-xl: rgba(0, 0, 0, 0.1); // Floating CTA, dropdown
+$shadow-premium: rgba(0, 0, 0, 0.1); // Dual-layer (large diffuse + crisp small) — .shadow-premium utility
+$shadow-inset-soft: rgba(0, 0, 0, 0.06); // Recessed UI — .shadow-inner-soft utility
+$spacing-0: 0;
+$spacing-1: 0.25rem; // 4px
+$spacing-2: 0.5rem; // 8px
+$spacing-3: 0.75rem; // 12px
+$spacing-4: 1rem; // 16px
+$spacing-5: 1.25rem; // 20px
+$spacing-6: 1.5rem; // 24px
+$spacing-8: 2rem; // 32px
+$spacing-10: 2.5rem; // 40px
+$spacing-12: 3rem; // 48px
+$spacing-16: 4rem; // 64px
+$spacing-20: 5rem; // 80px
+$spacing-24: 6rem; // 96px
+$button-min-width-xs: 56px; // Compact icon-button row
+$button-min-width-sm: 84px; // Compact text button
+$button-min-width-md: 120px; // Default button
+$button-min-width-lg: 144px; // Hero CTA
+$button-min-width-xl: 180px; // Splash CTA
+$button-height-sm: 32px;
+$button-height-md: 40px;
+$button-height-lg: 48px;
+$button-height-xl: 56px;
+$button-px-sm: 12px; // Horizontal padding for sm button
+$button-px-md: 16px;
+$button-px-lg: 20px;
+$button-px-xl: 28px;
+$button-font-sm: 0.8125rem; // 13px — sm button text
+$button-font-md: 0.875rem; // 14px — md/lg button text
+$button-font-lg: 1rem; // 16px — xl button text
+$z-index-base: 0;
+$z-index-dropdown: 10;
+$z-index-sticky: 20; // Sticky header / TOC sidebar
+$z-index-fab: 30; // Floating CTA, BackToTop
+$z-index-overlay: 40; // Modal backdrop scrim
+$z-index-modal: 50;
+$z-index-popover: 60; // Tooltips, dropdown menus
+$z-index-toast: 70;
+$z-index-max: 9999; // Reserved — last resort only

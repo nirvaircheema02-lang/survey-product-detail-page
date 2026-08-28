@@ -1,0 +1,195 @@
+/* ============================================================
+   CINEMATIC-DARK VARIANT OVERLAY
+   Opt-in only — applied via [data-variant="cinematic-dark"] on <html>.
+   Set before paint via cookie-read in RSC (Next 15) to avoid FOUC.
+
+   Activation (Next 15 consumer):
+     // app/layout.tsx
+     import { cookies } from 'next/headers';
+     const variant = cookies().get('ds-variant')?.value ?? 'editorial-light';
+     return <html data-variant={variant}>...</html>;
+
+   Surface palette:
+     bg:        #0a0a0c  (cinematic deep)
+     text:      #FAFAFA
+     brand-red: #b01f24
+
+   Section bg alternation (within dark ramp):
+     --section-bg-primary:  #111114 (cinematic surface)
+     --section-bg-accent:   #1a1a1e (raised dark surface)
+     --section-bg-contrast: #0a0a0c (deep) + DarkGradientMesh
+     --section-bg-mesh:     transparent (DarkGradientMesh component supplies bg)
+
+   Populated Phase B3 step 3 (2026-05-08).
+   ============================================================ */
+
+@layer tokens {
+  [data-variant="cinematic-dark"] {
+    /* ── Page surface ──────────────────────────────────────── */
+    --surface-bg:               var(--variant-cinematic-bg-deep, #0a0a0c);
+    --surface-text:             var(--variant-cinematic-text-primary, #fafafa);
+    --surface-text-muted:       var(--variant-cinematic-text-secondary, rgba(250, 250, 250, 0.65));
+    --surface-text-subtle:      var(--variant-cinematic-text-muted, rgba(250, 250, 250, 0.40));
+
+    /* ── Section bg system (cinematic ramp alternation) ────── */
+    --section-bg-primary:       var(--variant-cinematic-bg-surface, #111114);
+    --section-bg-accent:        #1a1a1e;
+    --section-bg-contrast:      var(--variant-cinematic-bg-darker, #050506);
+    --section-bg-mesh:          transparent;
+
+    --section-bg-current:       var(--section-bg-primary);
+
+    /* ── Hairlines / borders ───────────────────────────────── */
+    --border-default:           var(--semantic-hairline-on-dark-default, rgba(255, 255, 255, 0.12));
+    --border-soft:              var(--semantic-hairline-on-dark-soft, rgba(255, 255, 255, 0.10));
+    --border-strong:            rgba(255, 255, 255, 0.20);
+
+    /* ── Surface tint ──────────────────────────────────────── */
+    --tint-soft:                rgba(255, 255, 255, 0.025);
+    --tint-default:             rgba(255, 255, 255, 0.04);
+    --tint-strong:              rgba(255, 255, 255, 0.08);
+
+    /* ── Brand & accent ───────────────────────────────────── */
+    --cta-bg:                   var(--variant-cinematic-accent-primary, #b01f24);
+    --cta-text:                 var(--color-foundation-white, #ffffff);
+    --cta-bg-hover:             var(--variant-cinematic-accent-tertiary, #c62d31);
+    --cta-shadow:               var(--shadow-lg);
+
+    --accent-primary:           var(--variant-cinematic-accent-secondary, #806ce0);
+    --accent-secondary:         var(--variant-cinematic-accent-teal, #00e5ff);
+
+    /* ── Mesh control (cinematic dark mesh active for hero/resources) ── */
+    --gradient-mesh-active:     1;
+
+    --variant-name:             "cinematic-dark";
+
+    /* ── Container width system (OG bridge — DS port Batch 1, 2026-05-12) ── */
+    --container-page:           75rem;      /* 1200px */
+    --container-content:        62.5rem;    /* 1000px */
+    --container-narrow:         56.25rem;   /* 900px */
+    --container-prose:          43.75rem;   /* 700px */
+    --container-compact:        37.5rem;    /* 600px */
+
+    /* ── Responsive padding tokens ── */
+    --padding-mobile:           1rem;
+    --padding-tablet:           1.5rem;
+    --padding-desktop:          2rem;
+
+    /* ── Section vertical spacing (mobile-first) ── */
+    --section-py-mobile:        3rem;
+    --section-py-tablet:        4rem;
+    --section-py-desktop:       5rem;
+    --section-py-standard:      3rem;
+
+    /* ── Section composition helpers ── */
+    --section-header-mb:        3rem;
+    --pair-label-heading:       0.75rem;
+    --pair-heading-description: 1rem;
+    --text-measure:             43.75rem;
+
+    /* ── OG-compat aliases (DS Port Phase X · 2026-05-13) ──────────────
+       Cinematic-dark variant · text/surface aliases differ from editorial-light. */
+
+    /* Surface aliases (dark surface) */
+    --bg-warm:                  #1a1718;
+    --bg-warm-500:              #221d1f;
+    --bg-warm-600:              #2a2426;
+    --bg-warm-700:              #322b2d;
+    --bg-pure-black:            #000000;
+    --bg-pure-white:            #ffffff;
+    --white:                    #ffffff;
+    --warm-200:                 #f9f7f6;
+    --warm-300:                 #f5f2f1;
+    --warm-500:                 #eae5e3;
+    --black-50:                 #fafafa;
+    --black-200:                #e5e5e5;
+    --text-primary:             #FAFAFA;
+    --text-secondary:           rgba(250, 250, 250, 0.60);
+    --label-on-black:           rgba(255, 255, 255, 0.40);
+    --label-on-white:           rgba(0, 0, 0, 0.40);
+
+    /* Typography aliases · same scale both variants */
+    --text-xs:                  0.8rem;
+    --text-sm:                  1rem;
+    --text-base:                1.25rem;
+    --text-lg:                  1.563rem;
+    --text-xl:                  1.953rem;
+    --text-2xl:                 2.441rem;
+    --text-3xl:                 3.052rem;
+    --text-4xl:                 3.815rem;
+    --text-nav:                 0.875rem;
+    --text-compact:             0.875rem;
+    --text-card-micro:          0.625rem;
+    /* --font-sans / --font-serif deliberately NOT redeclared · base.css :root binding wins.
+       Fixed 2026-05-14 P1-A · str literal kills Next/font var resolution otherwise. */
+    --font-weight-light:        300;
+
+    /* Brand color aliases */
+    --brand-red:                var(--color-brand-red, #b01f24);
+    --red-500:                  #dc3238;
+    --red-700:                  #8f181d;
+    --green-50:                 #ecfdf5;
+    --green-500:                #10b981;
+    --green-600:                #059669;
+    --green-700:                #047857;
+    --coral-500:                #f99b85;
+    --purple-700:               #6c5bc0;
+    --color-accent-coral:       #f99b85;
+
+    /* Radius aliases */
+    --radius-element:           0.375rem;
+    --radius-inner:             0.25rem;
+    --radius-full:              9999px;
+    --rc-radius-card:           0.5rem;
+    --rc-radius-card-inner:     0.375rem;
+    --rc-radius-image:          0.25rem;
+
+    /* Component-level aliases */
+    --card-padding-md:          1rem;
+
+    color-scheme: dark;
+  }
+
+  /* Mesh contrast section — hero + resources sections in cinematic-dark variant */
+  [data-variant="cinematic-dark"] [data-variant-section="cinematic"],
+  [data-variant="cinematic-dark"] [data-section="hero"],
+  [data-variant="cinematic-dark"] [data-section="resources"] {
+    --section-bg-current:       var(--section-bg-mesh);
+  }
+}
+
+/* ── Composition layer — cinematic mesh attaches via [data-variant-section="cinematic"] ── */
+@layer composition {
+  [data-variant-section="cinematic"] {
+    position: relative;
+    background:
+      var(--composition-gradient-cinematic-base, linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%));
+    isolation: isolate;
+  }
+
+  [data-variant-section="cinematic"]::before,
+  [data-variant-section="cinematic"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: screen;
+  }
+
+  /* Pseudo-elements provide 2 layers; remaining 3 overlays sit in <DarkGradientMesh> child divs.
+     Reason: only ::before + ::after available per element. */
+  [data-variant-section="cinematic"]::before {
+    background:
+      var(--composition-gradient-cinematic-overlay-tl),
+      var(--composition-gradient-cinematic-overlay-tr);
+    filter: blur(80px);
+  }
+
+  [data-variant-section="cinematic"]::after {
+    background:
+      var(--composition-gradient-cinematic-overlay-bl),
+      var(--composition-gradient-cinematic-overlay-br);
+    filter: blur(80px);
+  }
+}

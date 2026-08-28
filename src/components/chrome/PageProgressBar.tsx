@@ -10,7 +10,7 @@
  * @how   useReadingProgress returns 0-100 · transform scaleX driven by % · GPU-accelerated.
  */
 
-import { useReadingProgress } from '@kenresearch/design-system/hooks';
+import { useReadingProgress } from '@/vendor/design-system/hooks';
 
 export function PageProgressBar() {
   const progress = useReadingProgress();

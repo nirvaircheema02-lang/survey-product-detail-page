@@ -19,7 +19,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Plus } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { SectionHeading, SectionLabel, Button, SectionWrapper } from '@kenresearch/design-system/atoms';
+import { SectionHeading, SectionLabel, Button, SectionWrapper } from '@/vendor/design-system/atoms';
 import { CASELETS } from '@/data/survey-bank-nbfc';
 
 export function ReferenceCaseletsSection() {

@@ -26,8 +26,8 @@
  */
 
 import { FileText, CircleCheckBig } from 'lucide-react';
-import { SectionHeading, SectionLabel, Button, SectionWrapper } from '@kenresearch/design-system/atoms';
-import { HorizontalScroll } from '@kenresearch/design-system/molecules';
+import { SectionHeading, SectionLabel, Button, SectionWrapper } from '@/vendor/design-system/atoms';
+import { HorizontalScroll } from '@/vendor/design-system/molecules';
 import { METHODOLOGY_MODES, METHODOLOGY_RECOMMENDATION } from '@/data/survey-bank-nbfc';
 
 export function SurveyMethodologySection() {

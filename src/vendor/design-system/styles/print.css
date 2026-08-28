@@ -1,0 +1,230 @@
+/* ============================================================
+   PRINT STYLESHEET — @kenresearch/design-system v2
+   Import order: after base.css (overrides sr-only · surface tokens)
+
+   GOALS
+   ────────────────────────────────────────────────────────────
+   1. Data tables become PRIMARY — sr-only reveals as full tables
+   2. Tooltips converted to visible footnotes
+   3. Interactive chrome hidden (variant toggles · sidebars · floating btns)
+   4. Charts kept visible · optimized for B&W printing
+   5. Page break hints for figures + headings
+   6. Force light theme for ink economy
+
+   CONSUMER NOTE
+   ─────────────────────────────────────────────────────────────
+   This file is imported at end of base.css.
+   Chart-consuming pages (showcase · v0.4 · future PDP) inherit automatically.
+   No additional import needed in consumer globals.css.
+   ============================================================ */
+
+@media print {
+
+  /* ── 1. Reveal sr-only data tables ──────────────────────────
+     ChartDataTable renders as <table className="sr-only"> inside ChartFigure.
+     Override clips/absolute positioning to make it visible.
+     Appears after the chart — labelled by <caption> within the table itself.
+  ────────────────────────────────────────────────────────── */
+  .sr-only {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 1rem 0 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    /* stylelint-disable-next-line property-no-unknown */
+    clip-path: none !important;
+    white-space: normal !important;
+    border: 0 !important;
+  }
+
+  /* Data table print typography */
+  .sr-only table,
+  table.sr-only {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    font-family: 'DM Sans', sans-serif;
+    color: #000 !important;
+  }
+
+  table.sr-only caption,
+  .sr-only caption {
+    font-size: 9pt;
+    font-style: italic;
+    color: #333 !important;
+    text-align: left;
+    margin-bottom: 4pt;
+    caption-side: top;
+  }
+
+  table.sr-only th,
+  .sr-only th {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+    border: 1px solid #999 !important;
+    padding: 4pt 8pt;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  table.sr-only td,
+  .sr-only td {
+    border: 1px solid #ccc !important;
+    padding: 3pt 8pt;
+    color: #000 !important;
+    background: transparent !important;
+  }
+
+  table.sr-only tr:nth-child(even) td,
+  .sr-only tr:nth-child(even) td {
+    background: #fafafa !important;
+  }
+
+  /* ── 2. Tooltip footnotes ────────────────────────────────────
+     CellTooltip portals have role="tooltip". In print they convert to
+     visible inline blocks (portal position: fixed becomes static).
+     NOTE: portal tooltips may not appear in same print flow as trigger —
+     this is best-effort. Data table fallback (Task 1) is the primary a11y path.
+  ────────────────────────────────────────────────────────── */
+  [role="tooltip"] {
+    position: static !important;
+    display: block !important;
+    page-break-inside: avoid;
+    border: 1px solid #999 !important;
+    background: transparent !important;
+    color: #000 !important;
+    font-size: 8pt;
+    font-style: italic;
+    margin: 4pt 0;
+    padding: 4pt 8pt;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    /* Remove portal z-index */
+    z-index: auto !important;
+    transform: none !important;
+  }
+
+  /* ── 3. Hide interactive chrome ──────────────────────────────
+     Variant toggles, sidebars, overlays, floating buttons, search bars
+     are developer-facing tooling — not print content.
+  ────────────────────────────────────────────────────────── */
+  [data-component="VariantToggle"],
+  [data-component="StateDemo"],
+  [data-component="A11yOverlay"],
+  [data-component="CodeSnippet"],
+  [data-component="ShowcaseTopBar"],
+  [data-component="ShowcaseRightPanel"],
+  aside#showcase-sidebar-desktop,
+  aside[aria-label="Component inspector"],
+  [data-print="hide"] {
+    display: none !important;
+  }
+
+  /* Showcase-specific chrome */
+  nav[aria-label="Chart library navigation"] {
+    display: none !important;
+  }
+
+  /* Skip link — hide after use */
+  a[href="#main-content"].skip-link {
+    display: none !important;
+  }
+
+  /* Reduced-motion toggle, viewport switcher, search bar */
+  [aria-label="Viewport size"],
+  [aria-label="Toggle reduced motion"],
+  [aria-label="Search components"],
+  [aria-label="Close navigation"] {
+    display: none !important;
+  }
+
+  /* ── 4. Force light theme · B&W chart optimization ───────────
+     Charts on dark surface print poorly on most printers.
+     Force white bg and black text for ink economy.
+  ────────────────────────────────────────────────────────── */
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Cinematic dark sections: invert to white for print */
+  [data-variant-section="cinematic"],
+  [data-variant="dark"] {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Chart canvas bg: always white in print */
+  [data-component="ChartFigure"],
+  .chart-figure,
+  figure {
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+
+  /* Highcharts SVG: color is kept (charts already use periwinkle palette which
+     prints reasonably as grey tones). No override — browser grayscale handles it. */
+
+  /* CSS-grid charts (Heatmap, Gantt, Treemap, KeywordScatter) */
+  [data-component="KenHeatmap"],
+  [data-component="KenGanttTimeline"],
+  [data-component="KenTreemap"],
+  [data-component="KenKeywordScatter"] {
+    background: #fff !important;
+  }
+
+  /* ── 5. Page break hints ──────────────────────────────────────
+     Prevent orphaned chart titles and mid-figure page breaks.
+  ────────────────────────────────────────────────────────── */
+  figure,
+  [data-component="ChartFigure"],
+  .chart-figure {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Demo canvas cards in showcase */
+  section[aria-labelledby] {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border: 1px solid #ddd !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    margin-bottom: 16pt;
+  }
+
+  /* ── 6. Typography for print ─────────────────────────────────
+     Serif fonts print well. Reduce from screen sizes.
+     Base print size: 10pt (browser default 12pt is fine too).
+  ────────────────────────────────────────────────────────── */
+  body {
+    font-size: 10pt;
+    line-height: 1.5;
+  }
+
+  a {
+    /* Show URLs for external links */
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+  }
+
+  /* Internal anchor links — no URL suffix */
+  a[href^="#"]::after {
+    content: "";
+  }
+}

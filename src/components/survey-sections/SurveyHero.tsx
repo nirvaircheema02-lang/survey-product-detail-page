@@ -30,7 +30,7 @@
 
 import Image from 'next/image';
 import { Users, CircleStar, Clock, ChartColumn } from 'lucide-react';
-import { Button } from '@kenresearch/design-system/atoms';
+import { Button } from '@/vendor/design-system/atoms';
 import {
   Breadcrumb as BreadcrumbRoot,
   BreadcrumbList,
@@ -38,7 +38,7 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@kenresearch/design-system/ui/breadcrumb';
+} from '@/vendor/design-system/ui/breadcrumb';
 import { Fragment } from 'react';
 
 const BREADCRUMB_LEVELS = [

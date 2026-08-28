@@ -25,8 +25,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@kenresearch/design-system/ui/dialog';
-import { Button } from '@kenresearch/design-system/atoms';
+} from '@/vendor/design-system/ui/dialog';
+import { Button } from '@/vendor/design-system/atoms';
 import type { ReactNode } from 'react';
 import type { ThemeSampleQuestions, SampleQuestionType } from '@/data/survey-bank-nbfc';
 

@@ -1,9 +1,9 @@
-@import '@kenresearch/design-system/styles/base.css';
-@import '@kenresearch/design-system/styles/utilities.css';
-@import '@kenresearch/design-system/styles/editorial-light.css';
-@import '@kenresearch/design-system/styles/cinematic-dark.css';
+@import '../vendor/design-system/styles/base.css';
+@import '../vendor/design-system/styles/utilities.css';
+@import '../vendor/design-system/styles/editorial-light.css';
+@import '../vendor/design-system/styles/cinematic-dark.css';
 /* Auto-generated safelist · regen w/ `node scripts/gen-ds-safelist.mjs` from workspace root */
-@import '@kenresearch/design-system/styles/_safelist.generated.css';
+@import '../vendor/design-system/styles/_safelist.generated.css';
 
 /* ── v2-only Tailwind v4 @theme registration ─────────────────────────────
    Reason: v2 builder pattern uses `className="font-display"` + `className="font-body"`
@@ -51,7 +51,7 @@
    scan DS source TSX directly. All Tailwind classes in atoms/molecules/organisms
    compile correctly · no per-atom safelist drift.
    ──────────────────────────────────────────────────────────────────────── */
-@source "../../../../design-system/core-v2/src/**/*.{tsx,ts}";
+@source "../vendor/design-system/**/*.{tsx,ts}";
 
 /* ── Legacy explicit safelist (kept as belt-and-braces · auto-generated tries first) ─
    _safelist.generated.css imported above handles the bulk. Manual entries below

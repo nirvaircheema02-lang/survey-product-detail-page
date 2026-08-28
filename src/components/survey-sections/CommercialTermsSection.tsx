@@ -21,16 +21,16 @@
 
 import { useState } from 'react';
 import { CircleCheck, Clock } from 'lucide-react';
-import { SectionHeading, SectionLabel, Button, Card, SectionWrapper } from '@kenresearch/design-system/atoms';
+import { SectionHeading, SectionLabel, Button, Card, SectionWrapper } from '@/vendor/design-system/atoms';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@kenresearch/design-system/ui/select';
-import { Slider } from '@kenresearch/design-system/ui/slider';
-import { Input } from '@kenresearch/design-system/ui/input';
+} from '@/vendor/design-system/ui/select';
+import { Slider } from '@/vendor/design-system/ui/slider';
+import { Input } from '@/vendor/design-system/ui/input';
 import {
   SAMPLE_SIZE_RANGE,
   GEOGRAPHY_OPTIONS,

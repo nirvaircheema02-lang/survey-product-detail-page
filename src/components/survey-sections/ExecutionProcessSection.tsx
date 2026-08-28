@@ -47,7 +47,7 @@ import {
 } from 'lucide-react';
 import { useRef, type ReactNode } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { SectionHeading, SectionLabel, Button, SectionWrapper } from '@kenresearch/design-system/atoms';
+import { SectionHeading, SectionLabel, Button, SectionWrapper } from '@/vendor/design-system/atoms';
 import { EXECUTION_STEPS, type ExecutionStep } from '@/data/survey-bank-nbfc';
 
 const ICON_MAP: Record<ExecutionStep['icon'], typeof Crosshair> = {

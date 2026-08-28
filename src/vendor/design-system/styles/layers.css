@@ -1,0 +1,16 @@
+/* ============================================================
+   LAYER ORDER DECLARATION
+   Must be the first CSS imported in any consumer or base.css.
+   Order matters — later layers win on equal specificity.
+   ============================================================
+
+   reset           — browser-reset rules (box-sizing, margin, padding)
+   base            — html/body defaults, scroll behavior, font smoothing
+   tokens          — CSS custom property declarations from @kenresearch/tokens
+   composition     — gradient overlays, dark gradient mesh, section bg system
+   atoms           — individual component base styles (Button, Badge, Card, etc.)
+   components      — molecule + organism layout styles
+   recipe-overrides — page-recipe-specific bg alternation, pillar variant overrides
+*/
+
+@layer reset, base, tokens, composition, atoms, components, recipe-overrides;

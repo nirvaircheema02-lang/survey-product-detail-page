@@ -42,7 +42,7 @@
  *        lines the bullets wrap to.
  */
 
-import { SectionHeading, SectionLabel, Button, CTALink, SectionWrapper } from '@kenresearch/design-system/atoms';
+import { SectionHeading, SectionLabel, Button, CTALink, SectionWrapper } from '@/vendor/design-system/atoms';
 import { RESEARCH_THEMES, SAMPLE_QUESTIONS } from '@/data/survey-bank-nbfc';
 import { SampleQuestionsDialog } from './SampleQuestionsDialog';
 

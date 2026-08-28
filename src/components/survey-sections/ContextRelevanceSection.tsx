@@ -12,7 +12,7 @@
  */
 
 import { Users, AlertTriangle, CircleHelp, Check } from 'lucide-react';
-import { SectionHeading, SectionLabel, SectionWrapper } from '@kenresearch/design-system/atoms';
+import { SectionHeading, SectionLabel, SectionWrapper } from '@/vendor/design-system/atoms';
 
 interface ContextColumn {
   icon: typeof Users;

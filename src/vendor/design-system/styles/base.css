@@ -1,0 +1,894 @@
+/* ============================================================
+   BASE — @kenresearch/design-system v2
+   Import this file in the consumer root (layout.tsx / main.tsx).
+   Order: layers → tokens → resets → base defaults → variant overrides
+
+   USAGE (Next 15 consumer):
+     import '@kenresearch/design-system/styles/base.css';
+     import '@kenresearch/design-system/styles/utilities.css';
+     import '@kenresearch/design-system/styles/editorial-light.css';
+     // OR cinematic-dark.css if pre-flagged
+
+   VARIANT (cookie + RSC read pattern):
+     // app/layout.tsx
+     import { cookies } from 'next/headers';
+     const variant = cookies().get('ds-variant')?.value ?? 'editorial-light';
+     return <html data-variant={variant}>...</html>;
+   ============================================================ */
+
+@import "./layers.css";
+@import "tailwindcss";
+
+/* Canonical token source — W3C DTCG, built by Style Dictionary v4 */
+@import "../../tokens/build/tokens.css";
+
+/* ── Reset ─────────────────────────────────────────────────── */
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* ── Base defaults ──────────────────────────────────────────── */
+@layer base {
+  html {
+    /* NO scroll-behavior:smooth — Lenis owns scroll (ANTI_PATTERNS.md Cat 14 + B2 deep-map).
+       Consumer must mount Lenis in client root layout. Reduced-motion fallback handled in Lenis config. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    /* Variant tokens supply --surface-bg + --surface-text via [data-variant] selector */
+    background-color: var(--surface-bg, var(--color-foundation-white, #ffffff));
+    color: var(--surface-text, var(--color-foundation-black, #000000));
+    font-family: var(--typography-family-body, 'DM Sans', sans-serif);
+    font-size: var(--typography-size-sm, 1rem);
+    line-height: var(--typography-lineheight-relaxed, 1.6);
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Focus visible — never disable rings (ANTI_PATTERNS.md Cat 8.5) */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-red, #b01f24);
+    outline-offset: 2px;
+  }
+
+  /* Native smooth scroll (replaces Lenis as of 2026-05-08 stack lock-in) */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Reduced motion — global opt-out (consumers must respect via Framer Motion useReducedMotion()) */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── Button sizing tokens (variant-neutral · used by atoms/Button.tsx) ──
+   WHY: Button atom referenced --button-height-* / --button-px-* / --button-min-width-*
+   that did not exist anywhere → md buttons rendered at 24px tall w/ 0 padding.
+   Added 2026-05-13 to ship v1 PDP rebuild. Heights follow 4pt grid.
+
+   CRITICAL: Must be UNLAYERED :root {} — NOT @layer tokens — because tokens.css
+   (Style Dictionary auto-generated, unlayered) defines these at wrong values (md=40px).
+   CSS cascade: unlayered always wins over @layer. Using @layer tokens here meant
+   tokens.css permanently overrode the corrected values. Fix 2026-05-13 OG-parity QA.
+   ──────────────────────────────────────────────────────────────── */
+:root {
+  /* OG-aligned sizing (Design_system_vs_26 theme.css canonical values · 2026-05-13 OG diff) */
+  --button-height-sm: 40px;   /* OG 2.5rem */
+  --button-height-md: 48px;   /* OG 3rem · touch-target compliant */
+  --button-height-lg: 56px;   /* OG 3.5rem */
+  --button-height-xl: 64px;   /* extrapolated +8px step */
+  --button-px-sm: 20px;       /* OG 1.25rem */
+  --button-px-md: 28px;       /* OG 1.75rem */
+  --button-px-lg: 32px;       /* OG 2rem */
+  --button-px-xl: 40px;       /* OG 2.5rem */
+  --button-min-width-sm: 96px;
+  --button-min-width-md: 120px;
+  --button-min-width-lg: 144px;
+  --button-min-width-xl: 168px;
+  --button-font-sm: 0.875rem;
+  --button-font-md: 1rem;     /* OG 1rem · was 0.875rem */
+  --button-font-lg: 1.0625rem;
+
+  /* ============================================================
+     SHADOW SYSTEM · OG canonical (Design_system_vs_26 theme.css L546-555 · 2026-05-15)
+     5 neutral levels + 3 purple-accent levels · single-layer simple rgba.
+     Replaces earlier dual-layer values · OG is authoritative truth.
+     ============================================================ */
+  --shadow-none: none;
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.08);     /* Subtle · cards · hover */
+  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.12);    /* Default card lift · dropdowns */
+  --shadow-lg:   0 8px 24px rgba(0, 0, 0, 0.15);    /* Hover · tooltips · modals */
+  --shadow-xl:   0 12px 32px rgba(0, 0, 0, 0.18);   /* Floating CTA · raised */
+  --shadow-2xl:  0 20px 48px rgba(0, 0, 0, 0.24);   /* Highest elevation · overlays */
+
+  /* Purple-accent shadows · premium/data-card variant · OG canonical */
+  --shadow-accent-sm: 0 2px 8px  rgba(128, 108, 224, 0.15), 0 1px 3px  rgba(0, 0, 0, 0.08);
+  --shadow-accent-md: 0 8px 24px rgba(128, 108, 224, 0.24), 0 2px 8px  rgba(0, 0, 0, 0.12);
+  --shadow-accent-lg: 0 16px 40px rgba(128, 108, 224, 0.32), 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* Inset + premium aliases (extend OG · not in OG but used by some atoms) */
+  --shadow-premium:    0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08);
+  --shadow-inset-soft: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover:      var(--shadow-accent-md);   /* alias · matches /sample expectation */
+  --shadow-card-hover-soft: var(--shadow-accent-sm);
+
+  /* Font CSS var bindings · maps Next/font output vars → DS-canonical names.
+     WHY: Next/font emits --font-noto-serif/--font-dm-sans (consumer layout.tsx) but DS atoms
+     reference --font-serif/--font-sans. Without remap → Georgia/ui-serif fallback (P1-A
+     2026-05-14 verification finding). Editorial-light/cinematic-dark each also redeclare these
+     as string literals — those wins must be neutralized. Consumer globals.css mirrors this
+     :root binding to take cascade priority over the variant tokens. */
+  --font-sans: var(--font-dm-sans), 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: var(--font-noto-serif), 'Noto Serif', Georgia, 'Times New Roman', serif;
+
+  /* ============================================================
+     SHORT-NAME COLOR SCALE ALIASES (legacy convention · matches v0_lite + report-store)
+     WHY: page authors write var(--purple-300) not var(--color-ramp-purple-300). Both must work.
+     2026-05-14 foundation lock · prevents the recurring "undefined token → black fallback" bug
+     diagnosed in /sample (and reports-pdp-v2 before it).
+     Source: design-system/tokens/build/tokens.css ramps · DTCG canonical.
+     Reference: design-system/core-v2/docs/FOUNDATIONS.md sections 1.4–1.11.
+     ============================================================ */
+
+  /* RED ramp · brand family · alias to --color-ramp-red-* */
+  --red-50:  var(--color-ramp-red-50,  #fef2f2);
+  --red-100: var(--color-ramp-red-100, #fee2e2);
+  --red-200: var(--color-ramp-red-200, #fecaca);
+  --red-300: var(--color-ramp-red-300, #fca5a7);
+  --red-400: var(--color-ramp-red-400, #f87176);
+  --red-500: var(--color-ramp-red-500, #dc3238);
+  --red-600: var(--color-ramp-red-600, #b01f24);   /* = --brand-red */
+  --red-700: var(--color-ramp-red-700, #8f181d);   /* = --brand-red-hover */
+  --red-800: var(--color-ramp-red-800, #771419);   /* = --brand-red-active */
+  --red-900: var(--color-ramp-red-900, #5f1014);
+  --color-red-800: #8a1518;   /* AA-compliant brand-red hover · 4.5:1 on warm-200 */
+
+  /* Brand semantic aliases (used by atoms · canonical CTA names) */
+  --brand-red:        var(--color-brand-red, #b01f24);
+  --brand-red-hover:  var(--color-ramp-red-700, #8f181d);
+  --brand-red-active: var(--color-ramp-red-800, #771419);
+
+  /* BLACK ramp · neutral grey · alias to --color-ramp-black-* */
+  --black:     var(--color-foundation-black, #000000);
+  --black-50:  var(--color-ramp-black-50,  #fafafa);
+  --neutral-50: var(--black-50);  /* alias · QuickAccessBar bg · RULES.md R2.2 · added 2026-05-15 */
+  --black-100: var(--color-ramp-black-100, #f5f5f5);
+  --black-200: var(--color-ramp-black-200, #e5e5e5);
+  --black-300: var(--color-ramp-black-300, #d4d4d4);
+  --black-400: var(--color-ramp-black-400, #a3a3a3);
+  --black-500: var(--color-ramp-black-500, #737373);
+  --black-600: var(--color-ramp-black-600, #525252);
+  --black-700: var(--color-ramp-black-700, #404040);
+  --black-800: var(--color-ramp-black-800, #262626);
+  --black-900: var(--color-ramp-black-900, #171717);
+
+  /* WHITE foundation */
+  --white: var(--color-foundation-white, #ffffff);
+
+  /* WARM ramp · editorial signature · alias to --color-ramp-warm-* */
+  --warm-50:  var(--color-ramp-warm-50,  #fefdfd);
+  --warm-100: var(--color-ramp-warm-100, #fcfbfa);
+  --warm-200: var(--color-ramp-warm-200, #f9f7f6);
+  --warm-300: var(--color-ramp-warm-300, #f5f2f1);   /* = --bg-warm · CANONICAL editorial section bg */
+  --warm-400: var(--color-ramp-warm-400, #f0ebe9);
+  --warm-500: var(--color-ramp-warm-500, #eae5e3);
+  --warm-600: var(--color-ramp-warm-600, #d9d1ce);
+  --warm-700: var(--color-ramp-warm-700, #c8bcb8);
+  --warm-800: var(--color-ramp-warm-800, #b7a9a3);
+  --warm-900: var(--color-ramp-warm-900, #a6968e);
+
+  /* PURPLE ramp · data/premium signal · alias to --color-ramp-purple-* */
+  --purple-50:  var(--color-ramp-purple-50,  #f7f6fe);
+  --purple-100: var(--color-ramp-purple-100, #efedfd);
+  --purple-200: var(--color-ramp-purple-200, #dfdcfb);
+  --purple-300: var(--color-ramp-purple-300, #c4bef7);   /* hero eyebrow on dark bg · 9:1 contrast */
+  --purple-400: var(--color-ramp-purple-400, #a89ff2);
+  --purple-500: var(--color-ramp-purple-500, #9488ec);
+  --purple-600: var(--color-ramp-purple-600, #806ce0);   /* = --color-accent-purple · CANONICAL */
+  --purple-700: var(--color-ramp-purple-700, #6c5bc0);
+  --purple-800: var(--color-ramp-purple-800, #5a4ba0);
+  --purple-900: var(--color-ramp-purple-900, #483c80);
+
+  /* PERIWINKLE ramp · trust · alias */
+  --periwinkle-50:  var(--color-ramp-periwinkle-50,  #fafbfe);
+  --periwinkle-100: var(--color-ramp-periwinkle-100, #f5f6fd);
+  --periwinkle-200: var(--color-ramp-periwinkle-200, #ebedfb);
+  --periwinkle-300: var(--color-ramp-periwinkle-300, #dfe1f9);
+  --periwinkle-400: var(--color-ramp-periwinkle-400, #d3d5f9);
+  --periwinkle-500: var(--color-ramp-periwinkle-500, #c3c6f9);   /* = --color-accent-periwinkle */
+  --periwinkle-600: var(--color-ramp-periwinkle-600, #a7abf0);
+  --periwinkle-700: var(--color-ramp-periwinkle-700, #8b90e0);
+  --periwinkle-800: var(--color-ramp-periwinkle-800, #7075c8);
+  --periwinkle-900: var(--color-ramp-periwinkle-900, #5a5fa0);
+
+  /* PERANO ramp · data sections · alias */
+  --perano-50:  var(--color-ramp-perano-50,  #fcfdfe);
+  --perano-100: var(--color-ramp-perano-100, #f9fbfe);
+  --perano-200: var(--color-ramp-perano-200, #f4f8fd);
+  --perano-300: var(--color-ramp-perano-300, #eff5fc);
+  --perano-400: var(--color-ramp-perano-400, #e9f2fb);
+  --perano-500: var(--color-ramp-perano-500, #dfeafa);   /* = --color-accent-perano */
+  --perano-600: var(--color-ramp-perano-600, #c8dff5);
+  --perano-700: var(--color-ramp-perano-700, #a7c9ed);
+  --perano-800: var(--color-ramp-perano-800, #86b3e5);
+  --perano-900: var(--color-ramp-perano-900, #6b94c0);
+
+  /* CORAL ramp · warmth/energy · alias */
+  --coral-50:  var(--color-ramp-coral-50,  #fffbf9);
+  --coral-100: var(--color-ramp-coral-100, #fff5f1);
+  --coral-200: var(--color-ramp-coral-200, #ffebe4);
+  --coral-300: var(--color-ramp-coral-300, #fdd7cb);
+  --coral-400: var(--color-ramp-coral-400, #fbb8a7);
+  --coral-500: var(--color-ramp-coral-500, #f99b85);   /* = --color-accent-coral */
+  --coral-600: var(--color-ramp-coral-600, #ea7a5f);   /* terracotta base */
+  --coral-700: var(--color-ramp-coral-700, #d96548);
+  --coral-800: var(--color-ramp-coral-800, #c15138);
+  --coral-900: var(--color-ramp-coral-900, #a23f2d);
+
+  /* GREEN · success only (CAGR positive · check icons · status pills) · NOT in tokens.css ramps · self-contained */
+  --green-50:  #ecfdf5;
+  --green-100: #d1fae5;
+  --green-200: #a7f3d0;
+  --green-300: #6ee7b7;
+  --green-400: #34d399;
+  --green-500: #10b981;
+  --green-600: #059669;   /* 3.77:1 on white · use ONLY on dark surfaces (7.2:1 on #141016) · for light-surface body text use --green-700 · contrast comment fixed 2026-05-15 */
+  --green-700: #047857;
+  --green-800: #065f46;
+  --green-900: #064e3b;
+
+  /* AMBER · warning only · medium-risk · pending state · self-contained */
+  --amber-50:  #fffbeb;
+  --amber-100: #fef3c7;
+  --amber-200: #fde68a;
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-700: #b45309;
+  --amber-800: #92400e;
+  --amber-900: #78350f;
+
+  /* ROSE · form errors only · DISTINCT from brand-red · self-contained */
+  --rose-50:  #fff1f2;
+  --rose-100: #ffe4e6;
+  --rose-200: #fecdd3;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --rose-500: #f43f5e;
+  --rose-600: #e11d48;
+  --rose-700: #be123c;
+  --rose-800: #9f1239;
+  --rose-900: #881337;
+
+  /* ── Legacy/QUICK_START aliases · maps fictional names to real tokens ──
+     WHY: Some page code already references --color-accent-purple-300 etc (typed against
+     QUICK_START.md before token reality audit). Provide aliases so existing code keeps
+     working while migrating to canonical short names. Logged as tech-debt · remove after
+     migration sweep completes (2026-05-14 foundation lock). */
+  --color-accent-purple-300: var(--color-ramp-purple-300, #c4bef7);
+  --color-accent-purple-600: var(--color-ramp-purple-600, #806ce0);
+  --color-accent-purple-700: var(--color-ramp-purple-700, #6c5bc0);
+  --color-foundation-black-500: var(--color-ramp-black-500, #737373);
+  --color-foundation-black-700: var(--color-ramp-black-700, #404040);
+  --color-semantic-success-600: #059669;   /* = --green-600 */
+  --color-semantic-success-700: #047857;
+
+  /* ============================================================
+     SPACING SCALE · OG canonical (Design_system_vs_26 theme.css L566-581 · 2026-05-15)
+     4px base unit · named-step scale matches OG · /sample author was correct ·
+     EARLIER MISTAKE: I claimed --space-* was fictional · it is real · OG-canonical.
+     ============================================================ */
+  --spacing-base-unit: 4px;
+  --space-2xs: 0.25rem;   /* 4px  · hairline gap */
+  --space-xs:  0.5rem;    /* 8px  · tight pair */
+  --space-sm:  0.75rem;   /* 12px · label-to-content */
+  --space-md:  1rem;      /* 16px · DEFAULT card padding · gap */
+  --space-lg:  1.5rem;    /* 24px · card padding generous · section content gap */
+  --space-xl:  2rem;      /* 32px · large card padding · section-internal gap */
+  --space-2xl: 3rem;      /* 48px · section header bottom margin */
+  --space-3xl: 4rem;      /* 64px · between-section gap mobile/tablet */
+  --space-4xl: 6rem;      /* 96px · between-section gap desktop */
+  --space-5xl: 8rem;      /* 128px · cinematic hero vertical · rare */
+  /* Numeric aliases (Tailwind-friendly · used in some components) */
+  --space-1:  var(--space-2xs);   /* 4px  · added 2026-05-15 for TableOfContents/CodeBlockWithCopy */
+  --space-2:  var(--space-xs);    /* 8px  · added 2026-05-15 */
+  --space-3:  var(--space-sm);    /* 12px · added 2026-05-15 */
+  --space-4:  var(--space-md);    /* 16px */
+  --space-5:  1.25rem;             /* 20px · added 2026-05-15 P0 fix · used by IndustryReportSection + LongFormReader */
+  --space-6:  var(--space-lg);    /* 24px */
+  --space-8:  var(--space-xl);    /* 32px · added 2026-05-15 */
+  --space-10: 2.5rem;              /* 40px · added 2026-05-15 P0 fix · used by LongFormReader */
+  --space-12: var(--space-2xl);   /* 48px */
+  /* Fractional half-step space aliases · Sprint G.8 · gap-closeout */
+  --space-1-5: 0.375rem;  /* 6px  · Tailwind space-1.5 parity */
+  --space-2-5: 0.625rem;  /* 10px · Tailwind space-2.5 parity */
+  --space-3-5: 0.875rem;  /* 14px · Tailwind space-3.5 parity */
+  --space-16:  4rem;       /* 64px · Tailwind space-16 parity · = --space-3xl */
+  /* Card padding tokens · OG canonical */
+  --card-padding-sm: 0.75rem;    /* 12px · compact card */
+  --card-padding-md: 1rem;       /* 16px · default card */
+  --card-padding-lg: 1.5rem;     /* 24px · spacious card */
+
+  /* ============================================================
+     TYPOGRAPHY SCALE · OG canonical (Design_system_vs_26 theme.css L131-165 · 2026-05-15)
+     Major Third 1.25× ratio · base 16px · adds full --text-* set.
+     ============================================================ */
+  --font-size: 16px;                                  /* html root · all rem calc base */
+  --text-2xs:  0.6875rem;  /* 11px   · micro labels · badges · compact metadata · added 2026-05-15 for project ref parity */
+  --text-xs:   0.8rem;     /* 12.8px · labels · metadata · molecule internals */
+  --text-sm:   1rem;       /* 16px   · BODY DEFAULT · 90% of text */
+  --text-base: 1.25rem;    /* 20px   · large body · card titles (4+ cards) */
+  --text-lg:   1.563rem;   /* 25px   · card titles (2-3 cards) */
+  --text-xl:   1.953rem;   /* 31.25px · subsection h3 */
+  --text-2xl:  2.441rem;   /* 39px   · section h2 · NEW STANDARD */
+  --text-3xl:  3.052rem;   /* 48.8px · hero h1 · final CTA h2 ONLY */
+  --text-4xl:  3.815rem;   /* 61px   · extra-large · challenge numbers */
+  --text-5xl:  4.768rem;   /* 76.3px · massive · future use */
+  /* Custom outside-scale tokens (specific use-cases) */
+  --text-compact:    0.875rem;   /* 14px · dense card body (4+ cards) */
+  --text-nav:        0.875rem;   /* 14px · nav · eyebrows · button text */
+  --text-card-micro: 0.625rem;   /* 10px · card micro-labels · dates · avatar initials */
+
+  /* G.13 Semantic font tokens (Bible §1.11 · 2026-05-28) · purpose-named aliases · NO new families.
+   * Use these in components instead of raw px to prevent drift.
+   * Pattern: --text-<purpose> · resolves to scale OR ref-justified mid-step. */
+  --text-eyebrow:           0.6875rem;     /* 11px · ref to --text-2xs · uppercase eyebrows */
+  --text-eyebrow-tracking:  0.10em;        /* Canonical eyebrow letter-spacing */
+  --text-paywall-title:     var(--text-md, 1.125rem);  /* 18px Noto Serif · paywall card title */
+  --text-paywall-body:      0.8125rem;     /* 13px · DM Sans 500 · paywall list items */
+  --text-paywall-cta:       var(--text-xs, 0.8rem);    /* 12.8px · paywall CTA buttons */
+  --text-source-citation:   0.6875rem;     /* 11px · DM Sans italic · source/footnote */
+  --text-data-label:        0.625rem;      /* 10px · DM Sans 600 tabular · chart axis/data labels */
+  /* Weights · OG only ships 400 + 500 (light=300 in font-weight-light) */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  /* Semantic text colors · OG canonical */
+  --text-primary:   #000000;                /* Headings · primary body on light */
+  --text-secondary: rgba(0, 0, 0, 0.60);    /* Descriptions · secondary body on light */
+  --label-on-black: rgba(255, 255, 255, 0.40);   /* Eyebrow label on dark bg */
+  --label-on-white: rgba(0, 0, 0, 0.40);         /* Eyebrow label on light bg */
+
+  /* Editorial bg composition · OG canonical */
+  --bg-composition-warm-editorial: linear-gradient(180deg, #faf9f8 0%, #f5f2f1 40%, #faf9f8 100%);
+  /* NOTE · NO brand-red gradient token · R1.2 strict · brand-red ONLY on CTA BUTTONS not section bgs.
+     CTA sections use black/white/warm bg + brand-red Button (per OG CTABanner pattern). */
+
+  /* ============================================================
+     BORDER RADIUS · EXTENDED SCALE · OG canonical (theme.css L474-491 · 2026-05-15)
+     5px increment scale · 0/2.5/5/10/15/20/25/30/35/full.
+     Earlier core-v2 had only --radius-button/card/image/pill · missing 6 sizes.
+     ============================================================ */
+  --radius-0:    0px;       /* Sharp corners · rare */
+  --radius-2xs:  2.5px;     /* Logos · icons · sub-element details */
+  --radius-xs:   5px;       /* PRIMARY · buttons · inputs · small cards · badges */
+  --radius-sm:   10px;      /* Medium cards · form groups · panels */
+  --radius-md:   15px;      /* Feature cards · modals · large buttons */
+  --radius-lg:   20px;      /* Hero cards · large containers */
+  --radius-xl:   25px;      /* Large modals · feature sections */
+  --radius-2xl:  30px;      /* Extra-large cards · floating panels */
+  --radius-3xl:  35px;      /* Hero sections · landing blocks */
+  --radius-full: 9999px;    /* Pills · avatars · dots */
+  /* Semantic radius aliases · OG canonical */
+  --radius-element:        var(--radius-xs);    /* 5px · buttons · inputs · tags */
+  --radius-inner:          var(--radius-2xs);  /* 2.5px · skeleton · checkbox marks */
+  --rc-radius-card:        var(--radius-sm);    /* 10px · card containers */
+  --rc-radius-card-inner:  var(--radius-xs);    /* 5px · nested elements */
+  --rc-radius-image:       var(--radius-2xs);  /* 2.5px · thumbnails */
+  /* Pre-existing aliases · kept for back-compat (resolved via DTCG primitives) */
+  /* --radius-image / --radius-button / --radius-card / --radius-pill already defined upstream in tokens.css */
+
+  /* ============================================================
+     BUTTON SIZING · realigned to OG canonical (theme.css L429-454 · 2026-05-15)
+     Earlier core-v2 had drift on px-lg (32 vs OG 36) · font-lg (17 vs OG 18) ·
+     min-width-md (120 vs OG 112). NOTE: button-height-* already align (40/48/56/64).
+     ============================================================ */
+  /* Heights ✅ already aligned upstream (40/48/56/64) */
+  /* Realign drifted values: */
+  --button-px-lg: 2.25rem;          /* OG 36px · was 32px */
+  --button-font-lg: 1.125rem;       /* OG 18px · was 17px */
+  --button-min-width-sm: 5rem;      /* OG 80px · was 96px */
+  --button-min-width-md: 7rem;      /* OG 112px · was 120px */
+  --button-min-width-lg: 9rem;      /* OG 144px · matches */
+  /* Vertical padding (auto-height buttons) · OG canonical · NEW */
+  --button-py-sm: 0.625rem;         /* 10px */
+  --button-py-md: 0.875rem;         /* 14px */
+  --button-py-lg: 1rem;              /* 16px */
+
+  /* ============================================================
+     BADGE SYSTEM · OG canonical (theme.css L605-635 · 2026-05-15)
+     4 sizes × 4 props (font/py/px/tracking) + 3 radius variants + transition.
+     Entirely missing from core-v2 before this port.
+     ============================================================ */
+  /* xs · 9-10px · info-card labels · micro metadata */
+  --badge-xs-font:     0.5625rem;   /* 9px */
+  --badge-xs-py:       0.1875rem;   /* 3px */
+  --badge-xs-px:       0.5rem;       /* 8px */
+  --badge-xs-tracking: 0.075em;
+  /* sm · 11px · section labels · pills · standard badges */
+  --badge-sm-font:     0.6875rem;   /* 11px */
+  --badge-sm-py:       0.3125rem;   /* 5px */
+  --badge-sm-px:       0.625rem;     /* 10px */
+  --badge-sm-tracking: 0.09em;
+  /* md · 13px · emphasized · highlighted tags */
+  --badge-md-font:     0.8125rem;   /* 13px */
+  --badge-md-py:       0.375rem;     /* 6px */
+  --badge-md-px:       0.75rem;      /* 12px */
+  --badge-md-tracking: 0.1em;
+  /* lg · 15px · large interactive · hero badges */
+  --badge-lg-font:     0.9375rem;   /* 15px */
+  --badge-lg-py:       0.4375rem;   /* 7px */
+  --badge-lg-px:       0.875rem;     /* 14px */
+  --badge-lg-tracking: 0.12em;
+  /* Badge radius variants */
+  --badge-radius-minimal: 0px;       /* text-only badges · no radius */
+  --badge-radius-rounded: 5px;       /* subtle rounding · category tags */
+  --badge-radius-pill:    9999px;    /* fully rounded pill */
+  /* Badge transition (consumed by .badge atom) */
+  --badge-transition-duration: 300ms;
+
+  /* ============================================================
+     LINE HEIGHT · short aliases (tokens.css has long names · pages need short)
+     OG style: --leading-* matches Tailwind class naming · easy mapping.
+     ============================================================ */
+  --leading-none:    1;        /* Display + hero numbers · tight optical */
+  --leading-tight:   1.1;      /* = --typography-line-height-tight · 4xl-5xl headings */
+  --leading-snug:    1.3;      /* = --typography-line-height-snug · section h2 */
+  --leading-normal:  1.5;      /* = --typography-line-height-normal · card titles · compact */
+  --leading-relaxed: 1.6;      /* = --typography-line-height-relaxed · body · descriptions */
+  --leading-loose:   1.75;     /* Editorial body · long-form prose */
+  --leading-nav:     1.4;      /* = --typography-line-height-nav-primary · nav text */
+
+  /* ============================================================
+     LETTER SPACING · OG canonical (uppercase labels + headings · Tailwind-style)
+     Used inline · 'tracking-[1.8px]' in JSX maps to these.
+     ============================================================ */
+  --tracking-tightest: -0.05em;  /* Massive display (5xl+) · optical correction */
+  --tracking-tighter:  -0.025em; /* Hero h1 · large headings */
+  --tracking-tight:    -0.01em;  /* Section h2 · subtle */
+  --tracking-normal:   0;         /* Body default */
+  --tracking-wide:     0.025em;   /* Small caps · button text */
+  --tracking-wider:    0.05em;    /* Eyebrow labels · uppercase tags */
+  --tracking-widest:   0.1em;     /* Section labels (CHAPTER 1) · 3px at 16px base */
+  --tracking-label:    1.8px;     /* OG canonical eyebrow tracking (CASE STUDY) */
+  --tracking-hero:     -0.5px;    /* OG canonical hero h1 negative */
+
+  /* ============================================================
+     MOTION · short aliases (tokens.css ms primitives · short names for pages)
+     Pages write style={{ transitionDuration: 'var(--duration-fast)' }}
+     ============================================================ */
+  /* Duration · ms (OG style · use w/ unit: 'var(--duration-fast)' resolves to 200 · add ms) */
+  --duration-instant: 100ms;
+  --duration-fast:    200ms;
+  --duration-normal:  300ms;
+  --duration-slow:    500ms;
+  --duration-slower:  800ms;
+  --duration-slowest: 1200ms;
+  /* Easing curves · cubic-bezier (matches tokens.css --motion-easing-*) */
+  --ease-linear:           linear;
+  --ease-out:              cubic-bezier(0, 0, 0.2, 1);             /* default UI exit */
+  --ease-out-expo:         cubic-bezier(0.16, 1, 0.3, 1);          /* hero entrance · expressive */
+  --ease-in-out:           cubic-bezier(0.4, 0, 0.2, 1);           /* symmetric · button hover */
+  --ease-in-out-quart:     cubic-bezier(0.77, 0, 0.175, 1);        /* slow symmetric · cinematic */
+  --ease-spring:           cubic-bezier(0.5, 1.5, 0.5, 1);         /* bouncy · use sparingly */
+  /* Long-name motion easing aliases (consumer code uses --motion-easing-* directly) */
+  --motion-easing-smooth:  cubic-bezier(0.4, 0, 0.2, 1);            /* alias of --ease-in-out · added 2026-05-15 for DummyHeader/Footer */
+  --motion-easing-out:     cubic-bezier(0, 0, 0.2, 1);              /* alias of --ease-out */
+  --motion-easing-out-expo: cubic-bezier(0.16, 1, 0.3, 1);          /* alias of --ease-out-expo */
+  /* Stagger · ms (Framer staggerChildren consumes these) */
+  --stagger-tight:   40ms;
+  --stagger-default: 80ms;
+  --stagger-loose:   150ms;
+  /* Common transition combos · ready-to-use */
+  --transition-fast:     all var(--duration-fast)   var(--ease-out);
+  --transition-normal:   all var(--duration-normal) var(--ease-out);
+  --transition-slow:     all var(--duration-slow)   var(--ease-out-expo);
+  --transition-color:    color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  --transition-shadow:   box-shadow var(--duration-normal) var(--ease-out);
+  --transition-transform:transform var(--duration-normal) var(--ease-out);
+
+  /* ============================================================
+     Z-INDEX · short aliases (tokens.css has --z-index-* long · pages need short)
+     ============================================================ */
+  --z-base:     0;
+  --z-dropdown: 10;
+  --z-sticky:   20;        /* sticky header · TOC sidebar */
+  --z-fab:      30;        /* floating CTA · BackToTop */
+  --z-overlay:  40;        /* modal backdrop scrim */
+  --z-modal:    50;
+  --z-popover:  60;        /* tooltips · dropdown menus */
+  --z-toast:    70;
+  --z-max:      9999;      /* last resort only */
+
+  /* ============================================================
+     CONTAINER WIDTHS · short Tailwind-style aliases for inline className
+     Long names (--container-*) already in variant CSS · add short for max-w-* usage
+     ============================================================ */
+  --max-w-prose:   43.75rem;     /* 700px · body text measure */
+  --max-w-compact: 37.5rem;      /* 600px · methodology · tight reading */
+  --max-w-narrow:  56.25rem;     /* 900px · CTAs · testimonials */
+  --max-w-content: 62.5rem;      /* 1000px · DEFAULT section content */
+  --max-w-page:    75rem;        /* 1200px · full page shell · navbar */
+
+  /* ============================================================
+     RESPONSIVE PADDING + SECTION VERTICAL · unlayered (was variant-only · cascade-fragile)
+     ============================================================ */
+  --padding-mobile:        1rem;       /* 16px · px-4 */
+  --padding-tablet:        1.5rem;     /* 24px · sm:px-6 */
+  --padding-desktop:       2rem;       /* 32px · md:px-8 */
+  --section-py-mobile:     3rem;       /* 48px · py-12 */
+  --section-py-tablet:     4rem;       /* 64px · sm:py-16 */
+  --section-py-desktop:    5rem;       /* 80px · md:py-20 */
+  --section-py-standard:   3rem;       /* 48px · default */
+  --section-header-mb:     3rem;       /* 48px · gap after section header block */
+  --pair-label-heading:    0.75rem;    /* 12px · gap label → heading */
+  --pair-heading-description: 1rem;    /* 16px · gap heading → description */
+  --text-measure:          43.75rem;   /* 700px · readable text max */
+
+  /* ============================================================
+     SECTION BG · short aliases (variant-bound · supplied by editorial-light/cinematic-dark)
+     Unlayered here ensures cascade resolution even when variants don't load.
+     ============================================================ */
+  --section-bg-primary:    #ffffff;
+  --section-bg-accent:     #f5f2f1;     /* warm-300 */
+  --section-bg-contrast:   #000000;
+  --section-bg-mesh:       transparent;
+  --section-bg-current:    var(--section-bg-primary);
+  --bg-warm:               #f5f2f1;     /* alias · most common section bg */
+  --bg-pure-black:         #000000;
+  --bg-pure-white:         #ffffff;
+
+  /* Variant-specific surface tokens · added 2026-05-15 Wave 1 token gap closures */
+  --variant-cinematic-bg-navbar:    #141016;  /* CaseStudyNavbar secondary bar · DummyFooter bg · canonical near-black */
+  --variant-cinematic-bg-secondary: #141016;  /* alias of above for semantic clarity */
+
+  /* Chart palette extension · added 2026-05-15 for ResponseChart data-series blue */
+  --chart-palette-blue:    #4a6ea8;  /* medium blue · WCAG AA on white + warm bg · data series */
+  --chart-palette-green-bright: #22c55e;  /* Tailwind green-500 parity · CompletionBadge active dot */
+
+  /* ============================================================
+     STATUS COLORS · short aliases (tokens.css has --semantic-status-*-text/bg/border)
+     ============================================================ */
+  --success-text:    #166534;
+  --success-bg:      #f0fdf4;
+  --success-border:  #bbf7d0;
+  --warning-text:    #92400e;
+  --warning-bg:      #fffbeb;
+  --warning-border:  #fde68a;
+  --error-text:      #991b1b;
+  --error-bg:        #fef2f2;
+  --error-border:    #fecaca;
+  --info-text:       #1e40af;
+  --info-bg:         #eff6ff;
+  --info-border:     #bfdbfe;
+
+  /* ============================================================
+     OPACITY tokens · semantic states (NEW · not in OG · added for consistency)
+     Use for disabled/hover/active states across atoms.
+     ============================================================ */
+  --opacity-disabled: 0.4;
+  --opacity-hover:    0.85;
+  --opacity-pressed:  0.7;
+  --opacity-overlay:  0.5;       /* modal scrim · matches --semantic-scrim alpha */
+  --opacity-watermark:0.08;      /* footer "Ken" wordmark · subtle bg text */
+
+  /* ============================================================
+     BORDER opacity scale · matches dashboard 5/8/10/15/20% recipe (ColorsContent.tsx L546-551)
+     Pages can write: border: 1px solid var(--border-default)
+     ============================================================ */
+  --border-hairline:  rgba(0, 0, 0, 0.05);    /* 5%  · barely visible */
+  --border-card:      rgba(0, 0, 0, 0.08);    /* 8%  · MOST USED · card border */
+  --border-section:   rgba(0, 0, 0, 0.10);    /* 10% · section divider */
+  --border-input:     rgba(0, 0, 0, 0.15);    /* 15% · input · hover */
+  --border-active:    rgba(0, 0, 0, 0.20);    /* 20% · focused · emphasized */
+  /* Dark-bg equivalents */
+  --border-on-dark-hairline: rgba(255, 255, 255, 0.06);
+  --border-on-dark-card:     rgba(255, 255, 255, 0.10);
+  --border-on-dark-section:  rgba(255, 255, 255, 0.12);
+  --border-on-dark-input:    rgba(255, 255, 255, 0.18);
+  --border-on-dark-active:   rgba(255, 255, 255, 0.25);
+
+  /* ============================================================
+     ICON COLORS · OG canonical (theme.css iconColors object · 4-class taxonomy)
+     ============================================================ */
+  --icon-content:  #806ce0;   /* = --purple-600 · content icons · semantic data */
+  --icon-utility:  #737373;   /* = --black-500 · utility icons · nav · chrome */
+  --icon-brand:    #b01f24;   /* = --brand-red · CTAs only */
+  --icon-on-dark:  #fafafa;   /* white-tinted on cinematic-dark */
+
+  /* ============================================================
+     BREAKPOINT vars · for CSS clamp() use (NEW · Tailwind handles utility classes)
+     Useful for: width: clamp(var(--bp-min), 50vw, var(--bp-max))
+     ============================================================ */
+  --bp-sm:  640px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+  --bp-xl:  1280px;
+  --bp-2xl: 1536px;
+  /* Min/max bounds for clamp() helpers · added 2026-05-15 */
+  --bp-min: 320px;   /* minimum supported viewport · mobile floor */
+  --bp-max: 1536px;  /* maximum design canvas · same as --bp-2xl */
+  /* Typography lineheight long-name aliases · added 2026-05-15 */
+  --typography-lineheight-relaxed: 1.6;   /* alias of --leading-relaxed · used in base.css L55 */
+
+  /* ============================================================
+     LEGACY COMPAT ALIASES · added 2026-05-19 per TOKEN-GAP-REPORT
+     Lets V0_lite + V0.2 + report-store snippets keep rendering.
+     Maps OLD names → canonical core-v2 names.
+     ============================================================ */
+  --warmBg:     var(--warm-300);              /* V0_lite legacy alias */
+  --warmBorder: var(--warm-500);              /* V0_lite legacy alias */
+  --content-max-width: var(--container-page); /* V0.2 broken ref fix */
+
+  /* ============================================================
+     ADDED TYPE TOKENS · 2026-05-19
+     ============================================================ */
+  --text-nav-helper: 0.813rem;   /* 13px · Breadcrumb / Methodology / Header secondary */
+  --text-md:         1.125rem;   /* 18px · card body (sub-sub-heading) */
+  --text-13:         0.8125rem;  /* 13px · V0.2 small body remap */
+  --text-24:         1.5rem;     /* 24px · V0.2 sub-heading remap */
+  --text-30:         1.875rem;   /* 30px · V0.2 h2 remap */
+  --text-32:         2rem;       /* 32px · V0.2 hero h1 remap */
+
+  /* ============================================================
+     ADDED WEIGHT TOKENS · 2026-05-19
+     ============================================================ */
+  --font-weight-light:    300;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  /* ============================================================
+     ADDED TRACKING TOKENS · 2026-05-19
+     ============================================================ */
+  --tracking-display-tight:  -0.02em;
+  --tracking-button:          0.0875px;
+  --tracking-label-tight:     0.1em;
+  --tracking-label-wide:      0.15em;
+  --tracking-label-x-wide:    0.2em;
+  --tracking-nav:             0.62px;
+  --tracking-nav-loose:       1.62px;
+
+  /* ============================================================
+     ADDED LEADING TOKENS · 2026-05-19
+     NOTE: --leading-snug already exists (1.3) · NOT overriding · only adding stat-label
+     ============================================================ */
+  --leading-stat-label:  1.5;
+
+  /* ============================================================
+     ADDED COLOR · 2026-05-19
+     ============================================================ */
+  --black-25: #fcfcfc;
+
+  /* ============================================================
+     GLASS TOKEN SUITE · 2026-05-19 · cinematic-dark hero / glass cards
+     ============================================================ */
+  --glass-bg:         rgba(255, 255, 255, 0.08);
+  --glass-border:     rgba(255, 255, 255, 0.15);
+  --glass-glow:       rgba(255, 255, 255, 0.05);
+  --glass-accent:     rgba(176,  31,  36, 0.8);
+  --glass-text:       rgba(255, 255, 255, 0.95);
+  --glass-text-muted: rgba(255, 255, 255, 0.5);
+  --glass-hover:      rgba(255, 255, 255, 0.12);
+
+  /* Glass-header · light surface · used by report-store navbar */
+  --glass-header-bg:   rgba(255, 255, 255, 0.82);
+  --glass-header-blur: blur(12px) saturate(1.4);
+
+  /* ============================================================
+     ADDED SHADOWS · 2026-05-19
+     NOTE: --shadow-card-hover already exists (L139) · NOT overriding
+     ============================================================ */
+  --shadow-card-rest:           0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-card-active:         0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-brand-button:        0 4px 12px rgba(176, 31, 36, 0.15);
+  --shadow-brand-button-hover:  0 6px 16px rgba(176, 31, 36, 0.25);
+  --shadow-search-hero:         0 20px 60px rgba(0, 0, 0, 0.3);
+  /* Brand periwinkle + purple shadows · Sprint G.8 gap-closeout */
+  --shadow-brand-periwinkle:    0 4px 16px rgba(94, 81, 200, 0.18);  /* TextCard · ScopeOfReport · TaxonomyTree */
+  --shadow-brand-purple:        0 4px 16px rgba(91, 79, 207, 0.16);  /* IconCard · SegmentationCard · MarketDataTable */
+
+  /* ============================================================
+     ADDED SPACING · 2026-05-19
+     ============================================================ */
+  --space-14: 3.5rem;   /* 56px · section-py-standard report-store */
+  --space-20: 5rem;     /* 80px · section-py-desktop */
+
+  /* ============================================================
+     MOTION · EASING + DURATION · 2026-05-19
+     NOTE: --duration-instant/fast/normal/slow/slowest already exist · NOT overriding
+     Adding NEW entries: medium · shimmer + 3 named ease curves
+     ============================================================ */
+  --ease-smooth:     cubic-bezier(0.22, 1, 0.36, 1);   /* entrance · default */
+  --ease-arrow:      cubic-bezier(0.4, 0, 0.2, 1);     /* AnimatedArrow · material */
+  --ease-card-lift:  cubic-bezier(0.16, 1, 0.3, 1);    /* card hover lift */
+
+  --duration-medium:   500ms;
+  --duration-shimmer:  700ms;
+
+  /* ============================================================
+     BG COMPOSITIONS · 2026-05-19
+     ============================================================ */
+  --bg-section-stats-tinted: linear-gradient(180deg, rgba(250, 251, 254, 0.6) 0%, rgba(235, 237, 251, 0.45) 100%);
+  --bg-card-methodology:     linear-gradient(135deg, rgba(243, 244, 255, 0.5) 0%, rgba(250, 250, 250, 0.3) 100%);
+  --bg-card-takeaways:       linear-gradient(135deg, rgba(243, 244, 255, 0.5) 0%, rgba(250, 250, 250, 0.3) 100%);
+
+  /* ============================================================
+     PATTERN TOKENS · dot-pattern bg · 2026-05-19
+     ============================================================ */
+  --pattern-opacity:   0.05;
+  --pattern-grid-size: 20px;
+  --pattern-dot-size:  1px;
+  --pattern-dot-position: 0 0;
+
+  /* ============================================================
+     SEMANTIC INK ALIASES · 2026-05-19 · Batch 3.2a addition
+     WHY · v0.3 consumer tokens (semantic-ink-strong, body, muted, subtle, faint) · expose DS-wide
+     so organisms + consumers can share idiom regardless of light/dark layer
+     ============================================================ */
+  --semantic-ink-strong: var(--black-900);
+  --semantic-ink-body:   var(--black-700);
+  --semantic-ink-muted:  var(--black-600);   /* #525252 · 7.4:1 on white · WCAG AA safe · eyebrows/units/captions */
+  --semantic-ink-subtle: var(--black-500);
+  --semantic-ink-faint:  rgba(0, 0, 0, 0.35); /* decorative only · never on body text */
+
+  /* ============================================================
+     SEMANTIC BG ALIASES · Sprint G.8 2026-05-27
+     WHY · showcase + consumer components reference --semantic-bg-page
+     (editorial warm off-white) and --semantic-bg-surface (pure white card
+     surface). Defined here so check-tokens passes clean and consumers
+     don't rely solely on hardcoded fallbacks.
+     ============================================================ */
+  --semantic-bg-page:    var(--warm-bg, #f5f2f1);    /* editorial-light page bg */
+  --semantic-bg-surface: var(--white, #ffffff);       /* card / panel surface */
+
+  /* Border-soft · base layer fallback */
+  --border-soft: rgba(0, 0, 0, 0.08);
+
+  /* ============================================================
+     TABLE TOKENS · Sprint E 2026-05-26 · DS gap closeout
+     Mirror of KEN_TABLE + KEN_TABLE_DENSITY TS constants (tokens.ts).
+     CSS vars are for DOM consumers. TS constants are for Highcharts
+     (pre-CSS resolution). Update BOTH if values change.
+     ============================================================ */
+  --table-card-border:            rgb(208, 203, 232);
+  --table-header-wash:            rgb(248, 247, 254);
+  --table-header-inverted:        rgba(0, 0, 0, 0.85); /* neutral dark · color-discipline 2026-05-22 */
+  --table-row-divider:            rgba(0, 0, 0, 0.08);
+  --table-row-divider-strong:     rgba(0, 0, 0, 0.12);
+  --table-alt-row-wash:           rgb(252, 251, 255);
+  --table-open-last-row-border:   rgb(228, 226, 240);
+  --table-density-compact:        28px;
+  --table-density-standard:       40px;
+  --table-density-comfortable:    45px;
+  --table-density-spacious:       56px;
+
+  /* ============================================================
+     SEMANTIC INK ON DARK · Sprint E 2026-05-26
+     Use on cinematic-dark surfaces (hero · FinalCTABanner · Slideshow).
+     DO NOT use the semantic-ink tokens above (those are light-surface only · on-dark variants defined below).
+     ============================================================ */
+  --semantic-ink-on-dark-strong:  rgba(255, 255, 255, 0.92);
+  --semantic-ink-on-dark-body:    rgba(255, 255, 255, 0.75);
+  --semantic-ink-on-dark-muted:   rgba(255, 255, 255, 0.62);
+  --semantic-ink-on-dark-faint:   rgba(255, 255, 255, 0.30);
+
+  /* ============================================================
+     BORDER ON DARK (additions) · Sprint E 2026-05-26
+     --border-on-dark-hairline · card · section already existed (L600-604).
+     Adding default + strong to complete the set.
+     ============================================================ */
+  --border-on-dark-default:       rgba(255, 255, 255, 0.10);
+  --border-on-dark-strong:        rgba(255, 255, 255, 0.20);
+
+  /* ============================================================
+     CINEMATIC SURFACE TOKENS · Sprint E 2026-05-26
+     Near-black gradient stops for FinalCTABanner + Slideshow + hero.
+     var(--color-foundation-black) = #000 which is too flat.
+     ============================================================ */
+  --color-surface-cinematic-start:   #0a0a0c;
+  --color-surface-cinematic-mid:     #12101a;
+  --color-surface-cinematic-end:     #1a0d0f;
+  --color-surface-cinematic-accent:  rgba(176, 31, 36, 0.18);
+
+  /* ============================================================
+     DS GAP CLOSEOUT · Sprint G.8 2026-05-27
+     Missing vars discovered via verify-css-vars.mjs audit.
+     ============================================================ */
+
+  /* Dark border soft · lighter than --border-on-dark-hairline for softer dividers */
+  --border-on-dark-soft:         rgba(255, 255, 255, 0.06);
+
+  /* Warm bg token · editorial-light off-white surface */
+  --warm-bg:                     #f5f2f1;
+
+  /* Surface color aliases · used in ReportCard + IndustrySidebar (light-variant pages) */
+  --color-surface-primary:       var(--warm-bg);   /* warm off-white · editorial-light default */
+  --color-bg-primary:            var(--warm-bg);   /* alias for MarketOverview */
+
+  /* Deep black · cinematic bg base · KenTreemap dark surface bg */
+  --color-deep:                  #0a0a0c;
+
+  /* Secondary accent color · purple-weight · MultiCardGridTemplate accent */
+  --color-secondary:             var(--color-ramp-periwinkle-600, #5e51c8);
+
+  /* Font family body alias · used in atoms pre-migration to --font-sans */
+  --font-family-body:            var(--font-sans);
+
+  /* Font weight heading alias · strong display weight */
+  --font-weight-heading:         600;
+
+  /* Text-48 · display alias for 3rem scale level */
+  --text-48:                     3rem;   /* 48px · HeroCinematicTemplate display */
+
+  /* Section padding large · organism spacing (ScopeOfReport · TaxonomyTree) */
+  --section-py-lg:               var(--space-4xl, 6rem);    /* 96px desktop */
+
+  /* Surface text aliases · cinematic-dark consumer convenience */
+  --surface-text-primary:        var(--semantic-ink-strong);
+}
+
+/* ============================================================
+   FORCED-COLORS (Windows High Contrast Mode) — Sprint G.2 2026-05-26
+   Forced-colors mode strips CSS background/color values and replaces
+   with OS system colors. We preserve structural visibility via borders.
+   System color keywords: Canvas (bg) · CanvasText (fg) · Highlight (focus).
+   ============================================================ */
+@media (forced-colors: active) {
+  /* Table: restore row divider borders (stripped bg means rows merge visually) */
+  [data-component="TableShell"] {
+    border: 1px solid CanvasText;
+  }
+  [data-component="TableShell"] tbody tr {
+    border-bottom: 1px solid CanvasText;
+  }
+
+  /* Heatmap cells: border makes cells visible when bg is stripped */
+  [data-component="ken-heatmap-cell"] {
+    border: 1px solid CanvasText;
+  }
+
+  /* Tooltip: ensure readable on any forced bg */
+  [role="tooltip"] {
+    border: 1px solid CanvasText !important;
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+
+  /* Focus indicators: use system Highlight color */
+  *:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* ── Print stylesheet ────────────────────────────────────── */
+/* Imported last so it can override sr-only + surface tokens  */
+@import "./print.css";

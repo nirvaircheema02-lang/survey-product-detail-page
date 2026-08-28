@@ -31,7 +31,7 @@
 
 import { useState } from 'react';
 import { SlidersHorizontal, Gauge, FileDown } from 'lucide-react';
-import { SectionHeading, SectionLabel, Card } from '@kenresearch/design-system/atoms';
+import { SectionHeading, SectionLabel, Card } from '@/vendor/design-system/atoms';
 import { DashboardPreviewCard } from './DashboardPreviewCard';
 
 // TODO: replace w/ real dashboard route once one exists in this project — no

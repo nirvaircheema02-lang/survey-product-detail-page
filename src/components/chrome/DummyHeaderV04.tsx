@@ -18,10 +18,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, UserCircle2, LogIn } from 'lucide-react';
-import { Button } from '@kenresearch/design-system/atoms';
-import { TextLink } from '@kenresearch/design-system/atoms';
-import { HamburgerIcon } from '@kenresearch/design-system/atoms';
-import { DropdownChevron } from '@kenresearch/design-system/atoms';
+import { Button } from '@/vendor/design-system/atoms';
+import { TextLink } from '@/vendor/design-system/atoms';
+import { HamburgerIcon } from '@/vendor/design-system/atoms';
+import { DropdownChevron } from '@/vendor/design-system/atoms';
 
 export interface DummyHeaderV04Props {
   /** Optional controlled hamburger state · used to lift state for SideTOC drawer */

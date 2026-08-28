@@ -1,0 +1,178 @@
+/* ============================================================
+   UTILITY CLASSES — @kenresearch/design-system v2
+   Ported from design-system/core/src/styles/modern-utilities.css
+   Extended with JSDoc-style intent headers per B2 deep-map.
+
+   ANTI-PATTERN GUARD (Cat 2.4): utilities use rgba() or var() only.
+   No hardcoded hex values — all values reference tokens where possible.
+   ============================================================ */
+
+@layer atoms {
+
+  /* ── Screen-reader only ────────────────────────────────────
+     INTENT: Visually hide element while keeping it accessible to assistive tech.
+     Use for: chart data tables · skip links (before :focus override) · icon labels.
+     Revealed in @media print via print.css override (tables become primary).
+     ANTI-PATTERN: Never use sr-only for content that sighted users also need.
+     NOTE: matches Tailwind's .sr-only spec exactly for compatibility.
+  ────────────────────────────────────────────────────────── */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ── Glassmorphism ─────────────────────────────────────────
+     INTENT: Frosted overlay for cards/modals on light backgrounds.
+     Use on elements layered over imagery or patterned surfaces.
+     Variant: .glass = light surface · .glass-dark = dark surface.
+     DO NOT use on interactive text elements (clips text a11y).
+     ANTI-PATTERN: Never use .glass without a translucent parent bg.
+  ────────────────────────────────────────────────────────── */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-dark {
+    /* INTENT: Cinematic-dark frosted overlay — navbar scroll state,
+       modal backdrop, floating card on dark mesh sections. */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* ── Text Gradients ────────────────────────────────────────
+     INTENT: Brand-accent text treatment for hero headings only.
+     .text-gradient-red  = Ken brand red CTA gradient (135°, red → lighter red)
+     .text-gradient-dark = Monochrome editorial gradient (black → mid-grey)
+     ANTI-PATTERN: Never use gradient text without a solid color fallback.
+     ANTI-PATTERN: Never apply to body text or labels — display/headline only.
+     NOTE: uses --color-brand-red token, not hardcoded hex (Cat 1.1).
+  ────────────────────────────────────────────────────────── */
+  /* ── Text size utilities (DS token aliases) ───────────────
+     INTENT: Expose --typography-size-* tokens as Tailwind-compatible
+     utility classes. text-2xs = 12px micro labels, source attribution,
+     figcaptions. NOT defined in Tailwind v4 core — must be explicit here.
+     ANTI-PATTERN: Never use text-2xs for body or UI labels (Cat 9.2).
+  ────────────────────────────────────────────────────────── */
+  .text-2xs {
+    font-size: var(--typography-size-2xs, 0.75rem); /* 12px */
+    line-height: 1.4;
+  }
+
+  /* Micro typography utilities — exposed as Tailwind classes so consumers don't need to
+     hand-write text-[var(--text-compact)] every time. Sprint 1 P0-6 restoration 2026-05-14. */
+  .text-compact {
+    font-size: var(--text-compact, 0.875rem);   /* 14px · dense grids */
+    line-height: 1.45;
+  }
+  .text-nav {
+    font-size: var(--text-nav, 0.875rem);       /* 14px · nav · ALSO --text-compact alias */
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+  .text-card-micro {
+    font-size: var(--text-card-micro, 0.625rem); /* 10px · meta · source attribution · figcaption ONLY */
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+  }
+
+  .text-gradient-red {
+    background: linear-gradient(135deg, var(--color-brand-red, #b01f24) 0%, #ff4d4d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Fallback for browsers without background-clip:text */
+    color: var(--color-brand-red, #b01f24);
+  }
+
+  .text-gradient-dark {
+    /* INTENT: Subtle depth on dark editorial headings — black → mid-grey.
+       Preferred over flat black when hero bg is white/warm (editorial-light). */
+    background: linear-gradient(135deg, #000000 0%, #434343 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: #000000;
+  }
+
+  /* ── Premium Shadows ───────────────────────────────────────
+     INTENT: Layered depth for cards and modals — avoids harsh single shadows.
+     .shadow-premium    = dual-layer (large diffuse + crisp small) for card lift
+     .shadow-inner-soft = inset shadow for pressed/sunken state (form fields, etc.)
+     ANTI-PATTERN: Never animate box-shadow (paint cost — Cat 10.7).
+     Use opacity transition on a pseudo-element instead.
+  ────────────────────────────────────────────────────────── */
+  .shadow-premium {
+    box-shadow:
+      0 10px 30px -10px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .shadow-inner-soft {
+    /* INTENT: Inset shadow for recessed UI elements — filter inputs, search boxes. */
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  /* ── Fade Masks ────────────────────────────────────────────
+     INTENT: Smooth bottom-edge fade on overflow containers —
+     signals more content below without a hard clip.
+     ANTI-PATTERN (Cat 14.5): Never use without matching parent section bg.
+       Carousel fade masks must match: warm=#f5f2f1, white=#fff, black=#000.
+       Use CarouselFadeMask component (auto-matches via CSS var inheritance).
+  ────────────────────────────────────────────────────────── */
+  .mask-fade-bottom {
+    mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+  }
+
+  /* ── Custom Scrollbars ─────────────────────────────────────
+     INTENT: Unobtrusive 6px scrollbar — visible on hover only.
+     Webkit-specific (no equivalent for Firefox without scrollbar-width/color).
+     Apply to any overflow container that should feel refined.
+  ────────────────────────────────────────────────────────── */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  /* ── Aspect Ratios ─────────────────────────────────────────
+     INTENT: Named aspect ratios for media containers.
+     .aspect-cinematic        = 21:9 — widescreen hero imagery, video banners
+     .aspect-portrait-editorial = 3:4 — portrait report covers, analyst headshots
+     DO NOT use Tailwind's arbitrary aspect-[x/y] when these exist (Cat 1.5).
+  ────────────────────────────────────────────────────────── */
+  .aspect-cinematic {
+    aspect-ratio: 21 / 9;
+  }
+
+  .aspect-portrait-editorial {
+    /* INTENT: Portrait format for editorial content — report covers, expert profiles. */
+    aspect-ratio: 3 / 4;
+  }
+
+}

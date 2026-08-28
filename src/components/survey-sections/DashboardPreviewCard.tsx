@@ -34,7 +34,7 @@
  */
 
 import Image from 'next/image';
-import { Button } from '@kenresearch/design-system/atoms';
+import { Button } from '@/vendor/design-system/atoms';
 
 export interface DashboardPreviewCardProps {
   /** Path to the real dashboard screenshot (public/ asset or remote URL). Never fabricated. */

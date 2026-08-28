@@ -29,7 +29,7 @@ import {
   IconBox,
   FilterChip,
   SectionWrapper,
-} from '@kenresearch/design-system/atoms';
+} from '@/vendor/design-system/atoms';
 import { SAMPLING_GROUPS } from '@/data/survey-bank-nbfc';
 
 /** lucide icon per sampling group id — shared between each group's card and the
