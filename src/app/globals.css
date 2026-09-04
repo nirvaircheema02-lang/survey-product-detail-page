@@ -591,6 +591,42 @@
    overrides needed. See memory feedback_no_patchwork.md for context.
    ════════════════════════════════════════════════════════════════════════ */
 
+/* ─── Immersive-dashboard navbar retreat (2026-08-28) ───────────────────────
+   The Interactive Dashboard section hides the site navbar while its immersive
+   stage is on screen, then restores it on exit.
+
+   WHY a CSS rule keyed on a <body> attribute rather than props or a wrapper:
+   the DS Navbar must NOT be rewritten (shared organism), and it must NOT be
+   wrapped either — its glass header is `position: sticky`, so any wrapper
+   element would become its sticky containing block and the header would scroll
+   away with that ~88px box instead of pinning to the viewport. Translating the
+   sticky element itself is safe: transforms are applied after layout, so its
+   sticky behaviour is untouched and simply rides along.
+
+   Both bands are targeted: the glass header by its data-component, and the
+   utility bar by its stable ARIA label (it carries no data-component).
+   Entirely inert unless DashboardPreviewSection sets the attribute, and that
+   component deletes it on unmount — nothing here is permanent.
+   ──────────────────────────────────────────────────────────────────────── */
+header[data-component='Navbar'],
+[aria-label='Utility information bar'] {
+  transition:
+    transform 420ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 260ms ease-out;
+}
+body[data-dashboard-immersive='true'] header[data-component='Navbar'],
+body[data-dashboard-immersive='true'] [aria-label='Utility information bar'] {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  header[data-component='Navbar'],
+  [aria-label='Utility information bar'] {
+    transition: none;
+  }
+}
+
 /* ─── SurveyHero "Trusted by" logo marquee (2026-08-26) ─────────────────────
    Live's own trusted-by strip is a continuous auto-scrolling marquee (a CSS
    module class + 60s linear infinite transform on a 5x-duplicated track), not
@@ -609,4 +645,3 @@
     animation: none !important;
   }
 }
-

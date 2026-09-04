@@ -16,7 +16,6 @@
  */
 
 import { Navbar, Footer, FAQSection } from '@/vendor/design-system/organisms';
-import { PageProgressBar } from '@/components/chrome/PageProgressBar';
 import { SurveyHero } from '@/components/survey-sections/SurveyHero';
 import { ContextRelevanceSection } from '@/components/survey-sections/ContextRelevanceSection';
 import { ResearchThemesSection } from '@/components/survey-sections/ResearchThemesSection';
@@ -31,7 +30,6 @@ import { FAQ_ITEMS, FAQ_CTA } from '@/data/survey-bank-nbfc';
 export function SurveyPageClient() {
   return (
     <>
-      <PageProgressBar />
       <Navbar activeHref="/survey" />
 
       <main id="main">
