@@ -4,8 +4,9 @@
  * ResearchThemesSection — "What This Survey Investigates"
  *
  * @what  Eight themes as numbered editorial rows: a serif index numeral as the
- *        visual anchor, a single hairline rule per row, and a quiet text
- *        action that opens the real sample-questions preview. 4-up grid on
+ *        visual anchor and a single hairline rule per row. A section-local
+ *        switch compares the original per-theme actions with a secondary CTA
+ *        linking to the question listing. 4-up grid on
  *        desktop (2-up tablet, 1-up mobile) so all 8 read as 2 rows instead of
  *        4 — the whole section fits one viewport without an internal scroll.
  * @why   The previous 2-up/4-row layout was ~1300px tall at desktop — taller
@@ -42,11 +43,14 @@
  *        lines the bullets wrap to.
  */
 
+import { useState } from 'react';
 import { SectionHeading, SectionLabel, Button, CTALink, SectionWrapper } from '@/vendor/design-system/atoms';
 import { RESEARCH_THEMES, SAMPLE_QUESTIONS } from '@/data/survey-bank-nbfc';
 import { SampleQuestionsDialog } from './SampleQuestionsDialog';
 
 export function ResearchThemesSection() {
+  const [version, setVersion] = useState<1 | 2>(1);
+
   return (
     <SectionWrapper
       id="research-themes"
@@ -56,10 +60,33 @@ export function ResearchThemesSection() {
       maxWidth="wide"
       className="scroll-mt-[120px]"
     >
-      <div className="inline-flex mb-3">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-4">
         <SectionLabel background="light" variant="accent">
           Research Themes
         </SectionLabel>
+        <div
+          role="group"
+          aria-label="Research themes design version"
+          className="inline-flex rounded-full border border-[var(--border-soft)] p-1"
+          style={{ backgroundColor: 'var(--color-foundation-white)' }}
+        >
+          {([1, 2] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={version === option}
+              onClick={() => setVersion(option)}
+              className={`rounded-full px-3 py-1.5 font-body text-[12px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] ${
+                version === option
+                  ? 'text-[var(--color-foundation-white)] shadow-sm'
+                  : 'text-[var(--semantic-ink-body)] hover:text-[var(--semantic-ink-strong)]'
+              }`}
+              style={version === option ? { backgroundColor: 'var(--color-brand-red)' } : undefined}
+            >
+              Version {option}
+            </button>
+          ))}
+        </div>
       </div>
 
       <SectionHeading
@@ -121,7 +148,7 @@ export function ResearchThemesSection() {
                   ))}
                 </ul>
 
-                {sample && (
+                {version === 1 && sample && (
                   <SampleQuestionsDialog themeTitle={theme.title} data={sample}>
                     {/* DS CTALink atom — owns its own type treatment, animated
                         arrow, hover and focus ring. mt-auto pins it to the
@@ -150,10 +177,19 @@ export function ResearchThemesSection() {
         })}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className={version === 1 ? 'mt-8 flex justify-center' : 'mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row'}>
         <Button variant="brand" size="md">
           Request a scope validation call
         </Button>
+        {version === 2 && (
+          <Button
+            variant="secondary"
+            size="md"
+            href="/survey/bank-nbfc-preference/sample-questions"
+          >
+            View all sample questions
+          </Button>
+        )}
       </div>
     </SectionWrapper>
   );

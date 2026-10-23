@@ -131,8 +131,8 @@ export function SampleQuestionsDialog({
           <p className="font-body text-[13px] text-[var(--semantic-ink-muted)]">
             +{remaining} more questions in the full survey
           </p>
-          <Button variant="brand" size="sm">
-            Request full questionnaire
+          <Button variant="brand" size="sm" href="/survey/bank-nbfc-preference/sample-questions">
+            View all sample questions
           </Button>
         </DialogFooter>
       </DialogContent>
