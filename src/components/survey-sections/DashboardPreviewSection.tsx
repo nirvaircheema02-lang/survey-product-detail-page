@@ -1,17 +1,13 @@
 'use client';
 
 /**
- * DashboardPreviewSection — "Interactive Dashboard" (scroll-to-immersive)
+ * DashboardPreviewSection — "Interactive Dashboard" (scale focus)
  *
  * @what  The REAL Ken Research B2B-importer dashboard, embedded live and
- *        interactive. Desktop: a tall scroll region containing a sticky 100vh
- *        stage. As the user scrolls, the editorial header fades out and the
- *        dashboard frame grows from a contained editorial figure (68vw) to a
- *        near-full-viewport immersive stage (97.5vw), where it becomes fully
- *        interactive — real filters, sidebar navigation, chart interactions.
- *        Scrolling on past reverses the whole thing back into page flow.
- *        Mobile/tablet + reduced-motion: the same real dashboard, embedded
- *        directly at a large static size, no expansion choreography.
+ *        interactive. Desktop: a large centred preview that pins, scales up in
+ *        place to fill the viewport band, holds there fully interactive, then
+ *        scales back down and releases. Mobile/tablet + reduced motion: the same
+ *        dashboard embedded at a large static size, no choreography.
  * @why   Replaces a screenshot + hover-CTA + redirect. The experience IS the
  *        CTA — there is deliberately no "Open Dashboard" button, no modal, no
  *        new tab, no feature-card list (the live dashboard demonstrates its own
@@ -21,50 +17,28 @@
  *        from this origin fired `load` with zero console errors — embedding is
  *        permitted, not bypassed. It is also a FIXED APP-SHELL: at 1440x900 its
  *        document does not scroll vertically and has exactly one inner scroll
- *        pane, so it can't fight the parent page for vertical scroll the way a
- *        long document in an iframe would.
+ *        pane, so it cannot fight the parent page for vertical scroll.
  *
- *        Three things protect against the nested-scroll trap the brief warns of:
- *        1. The iframe is `pointer-events: none` during expand/collapse, so
- *           wheel events over it always reach the page. It only becomes
- *           interactive once the stage has fully settled.
- *        2. The immersive stage stops just short of the viewport (97.5vw /
- *           93vh), leaving a thin margin of page surface on all sides. That
- *           margin is now small, so the primary guarantee is the measured
- *           scroll-chaining below, not the gutter.
+ *        Three things protect against the nested-scroll trap:
+ *        1. The iframe is `pointer-events: none` outside the hold, so wheel
+ *           events over it always reach the page during the ramps.
+ *        2. The stage keeps page surface above, below and either side of the
+ *           card at every size.
  *        3. No wheel hijacking, no scroll locking, no carousel — the section is
  *           an ordinary tall block with an ordinary `position: sticky` child, so
  *           native scrolling (and backward scrolling) is never intercepted.
  *
- *        One motion value drives everything: `expand` maps section progress
- *        0→1→1→0 across [enter · hold · exit], so the exit is the entry played
- *        backwards for free and backward scrolling reverses correctly by
- *        construction rather than by a second set of rules.
+ *        The site navbar is never touched: it stays visible throughout, and the
+ *        card is centred in the band BELOW it so it can never grow underneath.
  *
- *        Navbar: NOT rewritten and NOT wrapped (wrapping would break its
- *        `position: sticky`, since a wrapper becomes its sticky containing
- *        block). Instead this section toggles `data-dashboard-immersive` on
- *        <body>; a scoped rule in globals.css translates/fades the navbar's two
- *        bands while that attribute is set, and is completely inert otherwise.
- *
- *        Two presentation modes share this one dashboard, switched by a small
- *        V1/V2 segmented toggle in the section header (stakeholder review):
- *          V1 `ImmersiveEmbed`   — the approved scroll-to-immersive takeover:
- *                                  header fades, frame travels and grows to
- *                                  near-fullscreen, site navbar retreats.
- *          V2 `ScaleFocusEmbed`  — scale-focus: a large centred preview that
- *                                  pins, then scales up in place about a fixed
- *                                  centre via `transform` alone (no reflow, no
- *                                  travel) to fill the band below the navbar,
- *                                  holds interactive, and scales back down.
- *                                  Header untouched, navbar visible throughout.
+ *        A V1 "scroll-to-immersive takeover" variant and a V1/V2 review toggle
+ *        existed during design review; scale-focus was chosen as final and the
+ *        scaffolding was removed. Both live in git history (see cf2e248).
  */
-
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   cubicBezier,
   motion,
-  useMotionTemplate,
   useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
@@ -72,7 +46,6 @@ import {
   useTransform,
 } from 'framer-motion';
 import { SectionHeading, SectionLabel } from '@/vendor/design-system/atoms';
-import { VersionToggle, type ReviewVersion } from './VersionToggle';
 
 /** The real, deployed dashboard — never a screenshot, never fabricated UI. */
 const DASHBOARD_URL = 'https://ken-research-b2b-importer-dashboard.vercel.app/';
@@ -83,54 +56,12 @@ const DASHBOARD_TITLE =
 const SUPPORTING_TEXT =
   'Every mandate ships with a live dashboard alongside the report. Explore the real thing below.';
 
-/**
- * Scroll choreography, as fractions of the section's own scroll progress.
- * Section is 360vh tall with a 100vh sticky stage → 260vh of scrollable travel:
- *   enter   0 → .18  ≈  47vh of scroll  (settles early — see note below)
- *   hold  .18 → .68  ≈ 130vh            (stable immersive region)
- *   exit  .68 → 1    ≈  83vh            (unchanged)
- *
- * ENTRY TIMING (tightened 2026-08-28): the entry ran to .42 (≈109vh) which
- * read as sluggish — the dashboard was still growing long after the user had
- * committed to the section. Shortened to .18 so it settles into the immersive
- * position early, while still ramping across ~420px of scroll at 900px tall,
- * which is several wheel notches: fast, but nowhere near a jump. ONLY the
- * entry moved; the hold's end, the exit ramp, and the reverse are untouched,
- * so the approved return-to-original-position behaviour is bit-identical.
- */
-const ENTER_END = 0.18;
-const HOLD_END = 0.68;
-
-/**
- * Interactivity is armed strictly INSIDE the hold, never mid-motion — tracked
- * to ENTER_END (not left at its old .44) so the shortened entry doesn't leave
- * a dead stretch where the dashboard looks immersive but ignores clicks.
- * The disarm point is exit-side and therefore unchanged.
- */
-const INTERACTIVE_FROM = 0.22;
-const INTERACTIVE_TO = 0.66;
-
-/**
- * Navbar retreats late in the expansion and returns early in the exit. The
- * hide point is kept at the SAME relative position within the entry
- * (.30/.42 ≈ .71 → .71 × .18 ≈ .13), so the retreat still lands just as the
- * dashboard reaches full size rather than after it. Return point unchanged.
- */
-const NAV_HIDE_FROM = 0.13;
-const NAV_HIDE_TO = 0.78;
-
-/** V1 = scroll-to-immersive takeover · V2 = fixed-position scale focus. Same dashboard in both. */
-export type DashboardVersion = ReviewVersion;
-
 // ─── Shared header block ──────────────────────────────────────────────────────
 
-/**
- * Eyebrow + heading + one line of support, with the version toggle right-aligned
- * on the same row at lg+ and dropping below the copy on narrower widths.
- */
-function DashboardHeader({ id, toggle }: { id: string; toggle?: ReactNode }) {
+/** Eyebrow + heading + one line of support. */
+function DashboardHeader({ id }: { id: string }) {
   return (
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
+    <div className="flex flex-col gap-6">
       <div className="min-w-0">
         <div className="mb-3 inline-flex">
           <SectionLabel background="light" variant="accent">
@@ -144,7 +75,6 @@ function DashboardHeader({ id, toggle }: { id: string; toggle?: ReactNode }) {
           {SUPPORTING_TEXT}
         </p>
       </div>
-      {toggle ? <div className="shrink-0 lg:pt-1">{toggle}</div> : null}
     </div>
   );
 }
@@ -223,160 +153,6 @@ function StaticEmbed({ headingId }: { headingId: string }) {
         >
           <DashboardFrame mounted={mounted} interactive />
         </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Scroll-to-immersive — desktop ───────────────────────────────────────────
-
-function ImmersiveEmbed({ headingId, toggle }: { headingId: string; toggle?: ReactNode }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const mounted = useNearViewport(sectionRef);
-
-  const [interactive, setInteractive] = useState(false);
-
-  /**
-   * Section progress, 0→1, measured explicitly rather than via framer's
-   * `useScroll({ target })`. That hook measured this particular section as a
-   * dead range (verified: its change event never fired once across a clean
-   * rebuild, so every derived value stayed pinned at 0). A direct
-   * rect-based reading is equivalent — `-top / (height - viewportHeight)` is
-   * exactly the `['start start', 'end end']` range — and it is deterministic
-   * and inspectable, which matters more here than hook brevity. The same
-   * plain-listener approach already drives ExecutionProcessSection.
-   *
-   * Measured synchronously in the passive listener, deliberately NOT
-   * rAF-coalesced: an rAF latch (`if (pending) return`) deadlocks wherever rAF
-   * is throttled — a backgrounded/hidden tab never runs the callback, so the
-   * latch never clears and progress freezes at whatever it was (reproduced
-   * exactly that way here). One getBoundingClientRect on one element per scroll
-   * event is cheap, and is what this page's other scroll tracker already does.
-   *
-   * A ResizeObserver re-measures too, because the first reading happens during
-   * hydration when layout above this section may still be settling.
-   */
-  const scrollYProgress = useMotionValue(0);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      const rect = el.getBoundingClientRect();
-      const travel = rect.height - window.innerHeight;
-      if (travel <= 0) {
-        scrollYProgress.set(0);
-        return;
-      }
-      const raw = -rect.top / travel;
-      scrollYProgress.set(raw < 0 ? 0 : raw > 1 ? 1 : raw);
-    };
-
-    measure();
-    window.addEventListener('scroll', measure, { passive: true });
-    window.addEventListener('resize', measure);
-
-    let ro: ResizeObserver | undefined;
-    if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver(measure);
-      ro.observe(el);
-      ro.observe(document.documentElement);
-    }
-
-    return () => {
-      window.removeEventListener('scroll', measure);
-      window.removeEventListener('resize', measure);
-      ro?.disconnect();
-    };
-  }, [scrollYProgress]);
-
-  /**
-   * The single source of truth: 0 → 1 → 1 → 0 across enter / hold / exit.
-   * Because it is symmetric, the exit is the entrance reversed and backward
-   * scrolling reverses correctly without any second code path.
-   * V2 does not use this curve at all — it is a separate, animation-free
-   * component, so nothing here has to branch on presentation mode.
-   */
-  const expand = useTransform(
-    scrollYProgress,
-    [0, ENTER_END, HOLD_END, 1],
-    [0, 1, 1, 0],
-  );
-
-  // Frame geometry — resized responsively rather than transform-scaled, so the
-  // dashboard re-lays-out at its real resolution and its text never goes blurry.
-  //
-  // Immersive endpoints tightened 2026-08-28 (94vw/88vh → 97.5vw/93vh): the old
-  // 3vw/6vh gutters read as dead whitespace rather than intentional margin.
-  // 97.5vw is deliberately under 100 — `vw` includes the scrollbar gutter, so
-  // 100vw would overflow the content box on any scrollbar-present viewport;
-  // 97.5vw of 1440 = 1404px against a ~1425px content area, which clears it
-  // with room to spare. `topVh` is (100 − heightVh) / 2 = 3.5 so the frame stays
-  // exactly centred vertically. Only the endpoints moved — the start values,
-  // the easing, and everything the `expand` curve drives are untouched.
-  const widthVw = useTransform(expand, [0, 1], [68, 97.5]);
-  const heightVh = useTransform(expand, [0, 1], [56, 93]);
-  const topVh = useTransform(expand, [0, 1], [36, 3.5]);
-
-  const frameWidth = useMotionTemplate`${widthVw}vw`;
-  const frameHeight = useMotionTemplate`${heightVh}vh`;
-  const frameTop = useMotionTemplate`${topVh}vh`;
-
-  // Editorial header yields to the dashboard early in the expansion.
-  const headerOpacity = useTransform(expand, [0, 0.55], [1, 0]);
-  const headerY = useTransform(expand, [0, 0.55], [0, -24]);
-
-  useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    const shouldInteract = v >= INTERACTIVE_FROM && v <= INTERACTIVE_TO;
-    setInteractive((prev) => (prev === shouldInteract ? prev : shouldInteract));
-
-    const hideNav = v >= NAV_HIDE_FROM && v <= NAV_HIDE_TO;
-    // Reused, never rewritten: globals.css owns the transition, this only flips
-    // the flag. Cleaned up on unmount below so it can never leak to other pages.
-    if (document.body.dataset.dashboardImmersive === 'true' !== hideNav) {
-      if (hideNav) document.body.dataset.dashboardImmersive = 'true';
-      else delete document.body.dataset.dashboardImmersive;
-    }
-  });
-
-  useEffect(() => {
-    return () => {
-      delete document.body.dataset.dashboardImmersive;
-    };
-  }, []);
-
-  return (
-    <section
-      ref={sectionRef}
-      id="dashboard-preview"
-      aria-labelledby={headingId}
-      className="relative bg-[var(--color-foundation-white)] scroll-mt-[120px]"
-      style={{ height: '360vh' }}
-    >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Editorial header — normal flow at the top of the stage. */}
-        <motion.div
-          className="mx-auto max-w-[var(--container-page)] px-4 pt-[12vh] sm:px-6 md:px-8"
-          style={{ opacity: headerOpacity, y: headerY }}
-        >
-          <DashboardHeader id={headingId} toggle={toggle} />
-        </motion.div>
-
-        {/* Dashboard frame — absolutely placed so the header fading out can
-            never shove it around, and so its box can grow independently. */}
-        <motion.div
-          className="absolute overflow-hidden rounded-[var(--radius-element,5px)] border border-[var(--border-soft)] shadow-[var(--shadow-lg)]"
-          style={{
-            width: frameWidth,
-            height: frameHeight,
-            top: frameTop,
-            left: '50%',
-            x: '-50%',
-          }}
-        >
-          <DashboardFrame mounted={mounted} interactive={interactive} />
-        </motion.div>
       </div>
     </section>
   );
@@ -485,9 +261,8 @@ const V2_INTERACTIVE_TO = V2_HOLD_END - 0.015;
  *        releases into page flow.
  * @why   Deliberately NOT V1. V1 is a takeover: the header fades, the frame
  *        travels from 36vh up to 3.5vh and the site navbar retreats. V2 moves
- *        nothing. The header is untouched, the navbar is never touched (this
- *        component does not know `data-dashboard-immersive` exists), and the
- *        only property that ever animates is a single `scale`.
+ *        nothing. The header is untouched, the site navbar is never hidden or
+ *        moved, and the only property that ever animates is a single `scale`.
  * @how   The card is flex-centred in a pinned stage and scaled about its own
  *        centre (`transform-origin: center`). Because a transform is not layout,
  *        there is no x/y translation, no repositioning and no reflow of the card
@@ -505,7 +280,7 @@ const V2_INTERACTIVE_TO = V2_HOLD_END - 0.015;
  *        `pointer-events: none` outside the hold, so it can neither swallow the
  *        wheel events that drive the ramps nor be clicked mid-animation.
  */
-function ScaleFocusEmbed({ headingId, toggle }: { headingId: string; toggle?: ReactNode }) {
+function ScaleFocusEmbed({ headingId }: { headingId: string }) {
   const railRef = useRef<HTMLDivElement>(null);
   const mounted = useNearViewport(railRef);
   const [interactive, setInteractive] = useState(false);
@@ -584,7 +359,7 @@ function ScaleFocusEmbed({ headingId, toggle }: { headingId: string; toggle?: Re
     >
       {/* Header stays in ordinary page flow — no motion, no pinning, no fade. */}
       <div className="mx-auto max-w-[var(--container-page)] px-4 sm:px-6 md:px-8">
-        <DashboardHeader id={headingId} toggle={toggle} />
+        <DashboardHeader id={headingId} />
       </div>
 
       {/* Rail = stage height + pinned travel. No ancestor of the sticky child
@@ -632,13 +407,9 @@ export function DashboardPreviewSection() {
   const headingId = 'dashboard-preview-heading';
   const reducedMotion = useReducedMotion();
 
-  /** Local review state — V1 is the default, per brief. */
-  const [version, setVersion] = useState<DashboardVersion>('v1');
-
-  // Desktop-only gate for the immersive experience. Tracked in state (not a CSS
-  // breakpoint) because the two branches are genuinely different DOM/behaviour,
-  // not one layout restyled — and because `useScroll` must not run against a
-  // section that isn't the one on screen.
+  // Desktop-only gate for the scale-focus experience. Tracked in state (not a
+  // CSS breakpoint) because the two branches are genuinely different
+  // DOM/behaviour, not one layout restyled.
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)');
@@ -648,28 +419,11 @@ export function DashboardPreviewSection() {
     return () => mq.removeEventListener('change', sync);
   }, []);
 
-  // Reduced motion and below-lg both collapse to the same static embed, where
-  // V1 and V2 would be visually identical — so the toggle is omitted there
-  // rather than shipped as a control that appears to do nothing.
+  // Below lg, and at any width under reduced motion, the scroll choreography is
+  // dropped entirely for the same dashboard embedded at a large static size.
   if (reducedMotion || !isDesktop) {
     return <StaticEmbed headingId={headingId} />;
   }
 
-  const toggle = (
-    <VersionToggle
-      version={version}
-      onChange={setVersion}
-      name="DashboardVersionToggle"
-      ariaLabel="Dashboard presentation version"
-    />
-  );
-
-  // Keyed so switching fully unmounts the other mode: that tears down V1's
-  // scroll listener and runs its cleanup, which restores the navbar if the user
-  // flips to V2 mid-immersive.
-  return version === 'v1' ? (
-    <ImmersiveEmbed key="v1" headingId={headingId} toggle={toggle} />
-  ) : (
-    <ScaleFocusEmbed key="v2" headingId={headingId} toggle={toggle} />
-  );
+  return <ScaleFocusEmbed headingId={headingId} />;
 }
